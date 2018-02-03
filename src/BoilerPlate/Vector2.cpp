@@ -55,7 +55,7 @@ Vector2 Vector2::operator-(const Vector2& to_substract) const {
 }
 
 Vector2 Vector2::operator*(const Vector2& to_multiply) const {
-	return Vector2(x - to_multiply.x, y - to_multiply.y);
+	return Vector2(x * to_multiply.x, y * to_multiply.y);
 }
 
 Vector2 Vector2::operator/(const Vector2& to_divide) const {
@@ -76,13 +76,13 @@ Vector2 Vector2:: operator*(float scalar) {
 }
 
 
-Vector2 operator*(float scalar, const Vector2& to_multiply){
-	return to_multiply * scalar;
-}
+//Vector2 operator*(float scalar, const Vector2& to_multiply){
+	//return to_multiply * scalar;
+//}
 
-Vector2 operator*(const Vector2& to_multiply, float scalar) {
-	return to_multiply * scalar;
-}
+//Vector2 operator*(const Vector2& to_multiply, float scalar) {
+	//return to_multiply * scalar;
+//}
 
 Vector2& Vector2::operator+=(const Vector2& to_add){
 
