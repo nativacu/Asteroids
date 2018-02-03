@@ -36,6 +36,9 @@ float Vector2::Normalize() {
 
 	length = Length();
 
+	x *= inverse_factor;
+	y *= inverse_factor;
+  
 	return length;
 }
 
@@ -62,11 +65,7 @@ Vector2 Vector2::operator*(const Vector2& to_multiply) const {
 
 Vector2 Vector2::operator/(const Vector2& to_divide) const {
 
-	if (to_divide.x == 0) {
-		throw "Can't divide by zero";
-	}
-
-	if (to_divide.y == 0) {
+	if (to_divide.x == 0 || to_divide.y == 0) {
 		throw "Can't divide by zero";
 	}
 
@@ -113,6 +112,7 @@ Vector2& Vector2::operator*=(const Vector2& to_multiply){
 Vector2& Vector2::operator/=(const Vector2& to_divide)
 {
 	if (to_divide.x == 0 || to_divide.y == 0) {
+
 		throw "Can't divide by zero";
 	}
 
@@ -124,10 +124,10 @@ Vector2& Vector2::operator/=(const Vector2& to_divide)
 
 bool Vector2::operator==(const Vector2& to_compare) const
 {
-	return x == to_compare.x && y == to_compare.y;
+	return x == to_compare.x && y == to_compare.y && z == to_compare.z;
 }
 
 bool Vector2::operator!=(const Vector2& to_compare) const
 {
-	return x != to_compare.x || y != to_compare.y;
+	return x != to_compare.x || y != to_compare.y || z != to_compare.z;
 }
