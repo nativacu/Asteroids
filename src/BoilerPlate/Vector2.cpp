@@ -10,13 +10,13 @@ Vector2::Vector2(){
 Vector2::Vector2(float axis_value) {
 	x = axis_value;
 	y = axis_value;
-	Length();
+	length = Length();
 }
 
 Vector2::Vector2(float x_axis, float y_axis) {
 	x = x_axis;
 	y = y_axis;
-	Length();
+	length = Length();
 }
 
 float Vector2::Length() const{
@@ -30,10 +30,15 @@ float Vector2::SquaredLength() const {
 float Vector2::Normalize() {
 
 	float inverse_factor = 1.0f / Length();
-
+	
 	x *= inverse_factor;
 	y *= inverse_factor;
 
+	length = Length();
+
+	x *= inverse_factor;
+	y *= inverse_factor;
+  
 	return length;
 }
 
@@ -106,7 +111,8 @@ Vector2& Vector2::operator*=(const Vector2& to_multiply){
 
 Vector2& Vector2::operator/=(const Vector2& to_divide)
 {
-	if (to_divide.x == 0 || to_divide.y == 0) { 
+	if (to_divide.x == 0 || to_divide.y == 0) {
+
 		throw "Can't divide by zero";
 	}
 
@@ -116,10 +122,12 @@ Vector2& Vector2::operator/=(const Vector2& to_divide)
 	return *this;
 }
 
-bool Vector2::operator==(const Vector2& to_compare) const{
-	return x == to_compare.x && y == to_compare.y;
+bool Vector2::operator==(const Vector2& to_compare) const
+{
+	return x == to_compare.x && y == to_compare.y && z == to_compare.z;
 }
 
-bool Vector2::operator!=(const Vector2& to_compare) const{
-	return x != to_compare.x || y != to_compare.y;
+bool Vector2::operator!=(const Vector2& to_compare) const
+{
+	return x != to_compare.x || y != to_compare.y || z != to_compare.z;
 }

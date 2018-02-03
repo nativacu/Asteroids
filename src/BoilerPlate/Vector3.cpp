@@ -36,7 +36,7 @@ float Vector3::Length() const {
 }
 
 float Vector3::SquaredLength() const {
-	return x * x + y * y;
+	return x * x + y * y + z * z;
 }
 
 float Vector3::Normalize() {
@@ -46,8 +46,7 @@ float Vector3::Normalize() {
 	x *= inverse_factor;
 	y *= inverse_factor;
 	z *= inverse_factor;
-
-	return length;
+	length = Length();
 }
 
 Vector3& Vector3::operator=(const Vector3& target) {
@@ -55,7 +54,8 @@ Vector3& Vector3::operator=(const Vector3& target) {
 	x = target.x;
 	y = target.y;
 	z = target.z;
-	Length();
+  
+	length = Length();
 
 	return *this;
 }
