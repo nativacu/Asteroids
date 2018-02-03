@@ -76,13 +76,13 @@ Vector2 Vector2:: operator*(float scalar) {
 }
 
 
-//Vector2 operator*(float scalar, const Vector2& to_multiply){
-	//return to_multiply * scalar;
-//}
+Vector2 operator*(float scalar, const Vector2& to_multiply){
+	return to_multiply * scalar;
+}
 
-//Vector2 operator*(const Vector2& to_multiply, float scalar) {
-	//return to_multiply * scalar;
-//}
+Vector2 operator*(const Vector2& to_multiply, float scalar) {
+	return to_multiply * scalar;
+}
 
 Vector2& Vector2::operator+=(const Vector2& to_add){
 
@@ -110,11 +110,7 @@ Vector2& Vector2::operator*=(const Vector2& to_multiply){
 
 Vector2& Vector2::operator/=(const Vector2& to_divide)
 {
-	if (to_divide.x == 0) {
-		throw "Can't divide by zero";
-	}
-
-	if (to_divide.y == 0) {
+	if (to_divide.x == 0 || to_divide.y == 0) {
 		throw "Can't divide by zero";
 	}
 
