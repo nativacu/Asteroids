@@ -128,7 +128,7 @@ namespace Engine
 	void App::Render()
 	{
 		ColorScheme cs;
-		cs.change_background(cs.yellow);
+		cs.change_background(cs.orange);
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		glBegin(GL_LINE_LOOP);
