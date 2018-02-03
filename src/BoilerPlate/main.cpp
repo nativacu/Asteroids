@@ -9,6 +9,7 @@
 
 // 
 #include "App.hpp"
+#include "Vector2.hpp"
 
 const int WIDTH = 1136;
 const int HEIGHT = 640;
@@ -34,7 +35,7 @@ int main(int argc, char* argv[])
 		std::cout << "App Init error!\n";
 		return -1;
 	}
-
+	
 	// Execute game
 	//
 	app->Execute();
