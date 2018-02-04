@@ -13,6 +13,7 @@
       <Filter>Engine\Source files</Filter>
     </ClCompile>
     <ClCompile Include="Vector3.cpp" />
+    <ClCompile Include="Player.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.hpp" />
@@ -25,6 +26,9 @@
       <Filter>Engine\Header files</Filter>
     </ClInclude>
     <ClInclude Include="Vector3.hpp">
+      <Filter>Engine\Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.hpp">
       <Filter>Engine\Header files</Filter>
     </ClInclude>
   </ItemGroup>
