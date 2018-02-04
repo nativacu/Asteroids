@@ -46,7 +46,7 @@ Vector2& Vector2::operator=(const Vector2& target) {
 	
 	x = target.x;
 	y = target.y;
-	Length();
+	length = Length();
 
 	return *this;
 }
