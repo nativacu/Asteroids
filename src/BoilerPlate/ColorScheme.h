@@ -1,9 +1,7 @@
 #pragma once
 #include "Color.h"
 
-static class ColorScheme{
-
-public:
+struct ColorScheme{
 	ColorScheme();
 	void change_background(Color new_background);
 
@@ -12,6 +10,5 @@ public:
 	Color green;
 	Color blue;
 	Color orange;
-
 };
 

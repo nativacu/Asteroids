@@ -8,7 +8,10 @@
 
 //New includes
 #include "ColorScheme.h"
+#include "Player.hpp"
 
+Player ship;
+float default_move = 20;
 namespace Engine
 {
 	const float DESIRED_FRAME_RATE = 60.0f;
@@ -83,6 +86,22 @@ namespace Engine
 	{
 		switch (keyBoardEvent.keysym.scancode)
 		{
+		case SDL_SCANCODE_DOWN:
+			ship.Move(Vector2(0,-default_move));
+			break;
+
+		case SDL_SCANCODE_UP:
+			ship.Move(Vector2(0, default_move));
+			break;
+
+		case SDL_SCANCODE_RIGHT:
+			ship.Move(Vector2(default_move, 0));
+			break;
+
+		case SDL_SCANCODE_LEFT:
+			ship.Move(Vector2(-default_move, 0));
+			break;
+
 		default:
 			SDL_Log("%S was pressed.", keyBoardEvent.keysym.scancode);
 			break;
@@ -93,6 +112,7 @@ namespace Engine
 	{
 		switch (keyBoardEvent.keysym.scancode)
 		{
+
 		case SDL_SCANCODE_ESCAPE:
 			OnExit();
 			break;
@@ -101,6 +121,7 @@ namespace Engine
 			break;
 		}
 	}
+	
 
 	void App::Update()
 	{
@@ -128,16 +149,9 @@ namespace Engine
 	void App::Render()
 	{
 		ColorScheme cs;
-		cs.change_background(cs.yellow);
 		glClear(GL_COLOR_BUFFER_BIT);
-
-		glBegin(GL_LINE_LOOP);
-		glVertex2f(50.0, 50.0);
-		glVertex2f(50.0, -50.0);
-		glVertex2f(-50.0, -50.0);
-		glVertex2f(-50.0, 50.0);
-		glEnd();
-
+		cs.change_background(cs.orange);
+		ship.Render();
 		SDL_GL_SwapWindow(m_mainWindow);
 	}
 

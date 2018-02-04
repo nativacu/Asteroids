@@ -2,31 +2,14 @@
 #include <GL/glew.h>
 
 ColorScheme::ColorScheme(){
-	red.set_red(0.8f);
-	red.set_opacity(0.4f);
-
-	blue.set_red(0.2f);
-	blue.set_green(0.4f);
-	blue.set_blue(0.6f);
-	blue.set_opacity(0.4f);
-
-	yellow.set_red(0.9f);
-	yellow.set_green(0.9f);
-	yellow.set_blue(0.1f);
-	yellow.set_opacity(0.3f);
-
-	green.set_red(0.4f);
-	green.set_green(0.7f);
-	green.set_blue(0.3f);
-	green.set_opacity(0.3f);
-
-	orange.set_red(0.8f);
-	orange.set_green(0.3f);
-	orange.set_blue(0.1f);
-	orange.set_opacity(0.5f);
+	ColorScheme::red = Color(0.0f, 0.8f, 0.0f, 0.4f);
+	ColorScheme::blue = Color(0.2f, 0.4f, 0.6f, 0.4f);
+	ColorScheme::yellow = Color(0.9f,0.9f,0.1f,0.3f);
+	ColorScheme::green = Color(0.4f, 0.7f, 0.3f, 0.3f);
+	ColorScheme::orange = Color(0.8f,0.3f,0.1f,0.5f);
 }
 
 void ColorScheme::change_background(Color new_background)
 {
-	glClearColor(new_background.get_red(), new_background.get_green(), new_background.get_blue(), new_background.get_opacity());
+	glClearColor(new_background.red, new_background.green, new_background.blue, new_background.opacity);
 }
