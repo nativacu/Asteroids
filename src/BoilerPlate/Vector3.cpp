@@ -47,6 +47,8 @@ float Vector3::Normalize() {
 	y *= inverse_factor;
 	z *= inverse_factor;
 	length = Length();
+
+	return length;
 }
 
 Vector3& Vector3::operator=(const Vector3& target) {
