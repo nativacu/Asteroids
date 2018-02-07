@@ -21,7 +21,7 @@ struct Vector3 {
 	//Functions
 	float Length() const;
 	float SquaredLength() const;
-	float Normalize();
+	void Normalize();
 
 	//Operator Overloads
 	Vector3& operator= (const Vector3&);
