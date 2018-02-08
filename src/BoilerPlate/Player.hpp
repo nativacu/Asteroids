@@ -6,7 +6,11 @@ class Player {
 
 public:
 	Player();
-	void Render();
+	void Render(void);
 	void Move(Vector2&);
-	void Update();
+	void Update(void);
+
+	void MoveForward(void);
+	void RotateLeft(void);
+	void RotateRight(void);
 };

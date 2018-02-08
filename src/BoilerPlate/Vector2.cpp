@@ -27,7 +27,7 @@ float Vector2::SquaredLength() const {
 	return x * x + y * y;
 }
 
-float Vector2::Normalize() {
+void Vector2::Normalize() {
 
 	float inverse_factor = 1.0f / Length();
 	
@@ -38,8 +38,6 @@ float Vector2::Normalize() {
 
 	x *= inverse_factor;
 	y *= inverse_factor;
- 
-	return length;
 }
 
 Vector2& Vector2::operator=(const Vector2& target) {
