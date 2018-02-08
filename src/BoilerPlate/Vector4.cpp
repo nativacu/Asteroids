@@ -17,7 +17,7 @@ Vector4::Vector4(Vector2& to_change) {
 	x = to_change.x;
 	y = to_change.y;
 	z = 0.0f;
-	w = Vector2(0.0f);
+	w = 0.0f;
 }
 
 Vector4::Vector4(Vector3& to_vector4) {
@@ -27,18 +27,18 @@ Vector4::Vector4(Vector3& to_vector4) {
 	w = 0.0f;
 }
 
-Vector4::Vector4(Vector3& to_vector4, Vector2& warp){
+Vector4::Vector4(Vector3& to_vector4, float warp){
 	x = to_vector4.x;
 	y = to_vector4.y;
 	z = to_vector4.z;
-	w = warp;
+	w = w;
 }
 
-Vector4::Vector4(float x_axis, float y_axis, float z_axis, Vector2& warp) {
+Vector4::Vector4(float x_axis, float y_axis, float z_axis, float w) {
 	x = x_axis;
 	y = y_axis;
 	z = z_axis;
-	w = warp;
+	w = w;
 }
 
 float Vector4::Length() const {

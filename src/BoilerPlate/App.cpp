@@ -11,7 +11,7 @@
 #include "Player.hpp"
 
 Player ship;
-float default_move = 20;
+float default_move = 5.5f;
 namespace Engine
 {
 	const float DESIRED_FRAME_RATE = 60.0f;

@@ -12,7 +12,7 @@ struct Vector4 {
 	float x;
 	float y;
 	float z;
-	Vector2 w;
+	float w;
 	float length;
 
 	//Constructor
@@ -20,8 +20,8 @@ struct Vector4 {
 	Vector4(float);
 	Vector4(Vector2&);
 	Vector4(Vector3&);
-	Vector4(Vector3&, Vector2&);
-	Vector4(float, float, float, Vector2&);
+	Vector4(Vector3&, float);
+	Vector4(float, float, float, float);
 
 	//Functions
 	float Length() const;
