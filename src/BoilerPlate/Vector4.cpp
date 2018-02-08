@@ -5,12 +5,14 @@ Vector4::Vector4() {
 	x = 0.0f;
 	y = 0.0f;
 	z = 0.0f;
+	w = 0.0f;
 }
 
 Vector4::Vector4(float axis_value) {
 	x = axis_value;
 	y = axis_value;
 	z = axis_value;
+	w = axis_value;
 }
 
 Vector4::Vector4(Vector2& to_change) {
