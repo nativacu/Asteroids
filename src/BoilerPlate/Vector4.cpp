@@ -29,7 +29,7 @@ Vector4::Vector4(Vector3& to_vector4) {
 	w = 0.0f;
 }
 
-Vector4::Vector4(Vector3& to_vector4, float warp){
+Vector4::Vector4(Vector3& to_vector4, float w){
 	x = to_vector4.x;
 	y = to_vector4.y;
 	z = to_vector4.z;
