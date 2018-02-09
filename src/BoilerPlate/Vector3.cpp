@@ -39,7 +39,7 @@ float Vector3::SquaredLength() const {
 	return x * x + y * y + z * z;
 }
 
-void Vector3::Normalize() {
+float Vector3::Normalize() {
 
 	float inverse_factor = 1.0f / Length();
 
