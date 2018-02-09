@@ -11,7 +11,7 @@
 #include "Player.hpp"
 
 Player ship;
-float default_move = 20;
+float default_move = 8.0f;
 namespace Engine
 {
 	const float DESIRED_FRAME_RATE = 60.0f;
@@ -150,7 +150,7 @@ namespace Engine
 	{
 		ColorScheme cs;
 		glClear(GL_COLOR_BUFFER_BIT);
-		cs.change_background(cs.orange);
+		cs.change_background(cs.green);
 		ship.Render();
 		SDL_GL_SwapWindow(m_mainWindow);
 	}

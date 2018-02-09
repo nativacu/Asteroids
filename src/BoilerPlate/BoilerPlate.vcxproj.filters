@@ -12,8 +12,15 @@
     <ClCompile Include="Vector2.cpp">
       <Filter>Engine\Source files</Filter>
     </ClCompile>
-    <ClCompile Include="Vector3.cpp" />
-    <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Vector3.cpp">
+      <Filter>Engine\Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>Engine\Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="Vector4.cpp">
+      <Filter>Engine\Source files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.hpp" />
@@ -29,6 +36,9 @@
       <Filter>Engine\Header files</Filter>
     </ClInclude>
     <ClInclude Include="Player.hpp">
+      <Filter>Engine\Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector4.hpp">
       <Filter>Engine\Header files</Filter>
     </ClInclude>
   </ItemGroup>
