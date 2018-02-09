@@ -11,14 +11,13 @@ class Player {
 	float max_height = 640.0f;
 
 public:
+  
 	Player();
 	void Render(void);
 	void Move(Vector2&);
 	void Update(void);
-
 	void Warp(float&, float,  float);
 	void MoveForward(void);
 	void RotateLeft(void);
 	void RotateRight(void);
-
 };
