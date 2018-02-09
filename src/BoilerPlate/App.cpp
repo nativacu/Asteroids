@@ -87,18 +87,22 @@ namespace Engine
 		switch (keyBoardEvent.keysym.scancode)
 		{
 		case SDL_SCANCODE_DOWN:
+			ship.is_thrusting = false;
 			ship.Move(Vector2(0,-default_move));
 			break;
 
 		case SDL_SCANCODE_UP:
+			ship.is_thrusting = true;
 			ship.Move(Vector2(0, default_move));
 			break;
 
 		case SDL_SCANCODE_RIGHT:
+			ship.is_thrusting = false;
 			ship.Move(Vector2(default_move, 0));
 			break;
 
 		case SDL_SCANCODE_LEFT:
+			ship.is_thrusting = false;
 			ship.Move(Vector2(-default_move, 0));
 			break;
 
@@ -112,6 +116,9 @@ namespace Engine
 	{
 		switch (keyBoardEvent.keysym.scancode)
 		{
+		case SDL_SCANCODE_UP:
+			ship.is_thrusting = false;
+			break;
 
 		case SDL_SCANCODE_ESCAPE:
 			OnExit();
