@@ -150,7 +150,7 @@ namespace Engine
 	{
 		ColorScheme cs;
 		glClear(GL_COLOR_BUFFER_BIT);
-		cs.change_background(cs.orange);
+		cs.change_background(cs.green);
 		ship.Render();
 		SDL_GL_SwapWindow(m_mainWindow);
 	}
