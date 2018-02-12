@@ -3,20 +3,18 @@
 #include <SDL2/SDL_opengl.h>
 
 Player::Player() {
-	position.x = 0;
-	position.y = 0;
-	is_thrusting = false;
+	position_ = Vector2::Origin;
 }
 
 void Player::Move(Vector2 new_position) {
-	float half_width = max_width / 2 + 50;
-	float half_height = max_height / 2 + 60;
+	float warp_width = max_width_ / 2 + ship_width_;
+	float warp_height = max_height_ / 2 + ship_height_;
 
-	position += new_position;
+	position_ += new_position;
 	
 	//Warping
-	Warp(position.x, -half_width , half_width);
-	Warp(position.y, -half_height, half_height);
+	Warp(position_.x, -warp_width , warp_width);
+	Warp(position_.y, -warp_height, warp_height);
 }
 
 void Player::Warp(float& vertex, float min, float max){
@@ -34,10 +32,10 @@ void Player::Warp(float& vertex, float min, float max){
 void Player::Render()
 {
 	glLoadIdentity();
-	glTranslatef(position.x, position.y, 0.0f);
+	glTranslatef(position_.x, position_.y, 0.0f);
 	glBegin(GL_LINE_LOOP);
 
-	glVertex2f(0.0f , 30.0f);
+	glVertex2f(0.0f, 30.0f);
 	glVertex2f(-40.0f, -40.0f);
 	glVertex2f(-7.5f, -30.0f);
 	glVertex2f(0.0f, -40.0f);
@@ -47,10 +45,14 @@ void Player::Render()
 	glVertex2f(7.5f, -30.0f);
 	glVertex2f(0.0f, 30.0f);
 	glVertex2f(-7.5f, -30.0f);
-	
-	glEnd();
 
-	if (is_thrusting) {
+	glEnd();
+	if (is_moving_up_) {
+		Thrust();
+	}
+}
+
+void Player::Thrust() {
 		glBegin(GL_LINE_LOOP);
 		glVertex2f(-20.0f, -50.0f);
 		glVertex2f(-20.0f, -60.0f);
@@ -65,7 +67,5 @@ void Player::Render()
 		glVertex2f(20.0f, -50.0f);
 		glVertex2f(20.0f, -60.0f);
 		glEnd();
-
-	}
 }
 

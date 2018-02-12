@@ -3,7 +3,9 @@
 #define VECTOR_2_H
 
 struct Vector2 {
-	
+	//Static
+	static Vector2 Origin;
+
 	//Components
 	float x;
 	float y;
