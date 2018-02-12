@@ -10,7 +10,7 @@
 #include "ColorScheme.h"
 #include "Player.hpp"
 
-Player ship;
+Player kShip;
 float default_move = 8.0f;
 namespace Engine
 {
@@ -87,23 +87,24 @@ namespace Engine
 		switch (keyBoardEvent.keysym.scancode)
 		{
 		case SDL_SCANCODE_DOWN:
-			ship.is_thrusting = false;
-			ship.Move(Vector2(0,-default_move));
+			::kShip.moving_up = false;
+			::kShip.Move(Vector2(0,-default_move));
 			break;
 
 		case SDL_SCANCODE_UP:
-			ship.is_thrusting = true;
-			ship.Move(Vector2(0, default_move));
+			::kShip.moving_up = true;
+			::kShip.Move(Vector2(0, default_move));
+			
 			break;
 
 		case SDL_SCANCODE_RIGHT:
-			ship.is_thrusting = false;
-			ship.Move(Vector2(default_move, 0));
+			::kShip.moving_up = false;
+			::kShip.Move(Vector2(default_move, 0));
 			break;
 
 		case SDL_SCANCODE_LEFT:
-			ship.is_thrusting = false;
-			ship.Move(Vector2(-default_move, 0));
+			::kShip.moving_up = false;
+			::kShip.Move(Vector2(-default_move, 0));
 			break;
 
 		default:
@@ -117,7 +118,7 @@ namespace Engine
 		switch (keyBoardEvent.keysym.scancode)
 		{
 		case SDL_SCANCODE_UP:
-			ship.is_thrusting = false;
+			::kShip.moving_up = false;
 			break;
 
 		case SDL_SCANCODE_ESCAPE:
@@ -158,7 +159,7 @@ namespace Engine
 		ColorScheme cs;
 		glClear(GL_COLOR_BUFFER_BIT);
 		cs.change_background(cs.green);
-		ship.Render();
+		::kShip.Render();
 		SDL_GL_SwapWindow(m_mainWindow);
 	}
 
@@ -257,6 +258,9 @@ namespace Engine
 		//
 		m_width = width;
 		m_height = height;
+
+		::kShip.window_width = width;
+		::kShip.window_height = height;
 
 		SetupViewport();
 	}
