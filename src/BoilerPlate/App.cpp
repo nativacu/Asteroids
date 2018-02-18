@@ -11,7 +11,6 @@
 #include "Player.hpp"
 
 Player kShip;
-float default_move = 8.0f;
 namespace Engine
 {
 	const float DESIRED_FRAME_RATE = 60.0f;
@@ -88,23 +87,21 @@ namespace Engine
 		{
 		case SDL_SCANCODE_DOWN:
 			::kShip.moving_up = false;
-			::kShip.Move(Vector2(0,-default_move));
 			break;
 
 		case SDL_SCANCODE_UP:
 			::kShip.moving_up = true;
-			::kShip.Move(Vector2(0, default_move));
-			
+			::kShip.MoveForward();
 			break;
 
 		case SDL_SCANCODE_RIGHT:
 			::kShip.moving_up = false;
-			::kShip.Move(Vector2(default_move, 0));
+			::kShip.moving_right = true;
 			break;
 
 		case SDL_SCANCODE_LEFT:
 			::kShip.moving_up = false;
-			::kShip.Move(Vector2(-default_move, 0));
+			::kShip.moving_left = true;
 			break;
 
 		default:
@@ -119,6 +116,7 @@ namespace Engine
 		{
 		case SDL_SCANCODE_UP:
 			::kShip.moving_up = false;
+			::kShip.moving_left = false;
 			break;
 
 		case SDL_SCANCODE_ESCAPE:
