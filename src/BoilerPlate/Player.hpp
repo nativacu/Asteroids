@@ -1,14 +1,14 @@
 #pragma once
 #include <utility> 
 #include "Vector2.hpp"
+#include "Entity.hpp"
 
-const int kTotalShipPoints = 10;
 const int kTotalThrusterPoints = 6;
 const float kDefaultMove = 8.0f;
+const float kDefaultRotationAngle = 4.0f;
 
-class Player {
+class Player : public Entity{
 
-	Vector2 position_;
 	float max_width_ = 1136.0f;
 	float max_height_ = 640.0f;
 	float ship_width_ = 50.0f;
@@ -18,19 +18,18 @@ class Player {
 	bool is_moving_up_;
 	bool is_moving_left_;
 	bool is_moving_right_;
-	std::pair<float, float> ship_points_[kTotalShipPoints];
-	std::pair<float, float> thruster_points_[kTotalThrusterPoints];
+	
+	std::vector<Vector2> thruster_vertices_;
 
 public:
 	Player();
-	void Render(void);
-	void Move(Vector2);
-	void Update(void);
+	void Render(void) override;
 	void Warp(float&, float,  float);
 	void Thrust(void);
 	void MoveForward(void);
 	void RotateLeft(void);
 	void RotateRight(void);
+	void FillVertices(void) override;
 
 	//Properties for is_moving_up member
 	__declspec (property (put = SetIsMovingUp, get = GetIsMovingUp))

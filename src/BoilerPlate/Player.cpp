@@ -8,37 +8,10 @@ Player::Player() {
 	position_ = Vector2::Origin;
 	ship_angle_ = 0.0f;
 	is_moving_left_ = false;
-
-	ship_points_[0] = std::make_pair(0.0f, 30.0f);
-	ship_points_[1] = std::make_pair(-40.0f, -40.0f);
-	ship_points_[2] = std::make_pair(-7.5f,-30.0f);
-	ship_points_[3] = std::make_pair(0.0f, -40.0f);
-	ship_points_[4] = std::make_pair(7.5f, -30.0f);
-	ship_points_[5] = std::make_pair(40.0f, -40.0f); 
-	ship_points_[6] = std::make_pair(0.0f, 30.0f);
-	ship_points_[7] = std::make_pair(7.5f, -30.0f);
-	ship_points_[8] = std::make_pair(0.0f, 30.0f);
-	ship_points_[9] = std::make_pair(-7.5f, -30.0f);
-
-	thruster_points_[0] = std::make_pair(-20.0f, -50.0f);
-	thruster_points_[1] = std::make_pair(-20.0f, -60.0f);
-	thruster_points_[2] = std::make_pair(0.0f, -50.0f);
-	thruster_points_[3] = std::make_pair(0.0f, -70.0f);
-	thruster_points_[4] = std::make_pair(20.0f, -50.0f);
-	thruster_points_[5] = std::make_pair(20.0f, -60.0f);
+	is_moving_up_ = false;
+	FillVertices();
 }
 
-void Player::Move(Vector2 new_position) {
-	float warp_width = max_width_ / 2 + ship_width_;
-	float warp_height = max_height_ / 2 + ship_height_;
-
-	position_ += new_position;
-}
-
-void Player::Update(void)
-{
-
-}
 
 void Player::Warp(float& vertex, float min, float max){
 
@@ -70,33 +43,28 @@ void Player::Render()
 		Thrust();
 	}
 
-	glBegin(GL_LINE_LOOP);
-
-	for (int i = 0; i < kTotalShipPoints; i++) {
-		glVertex2f(ship_points_[i].first, ship_points_[i].second);
-	}
-
-	glEnd();
+	DrawShape();
 }
 
 void Player::Thrust() {
 
+	//Draws all Thruster vertices
 	for (int i = 0; i < kTotalThrusterPoints; i += 2) {
 		glBegin(GL_LINE_LOOP);
-		glVertex2f(thruster_points_[i].first, thruster_points_[i].second);
-		glVertex2f(thruster_points_[i + 1].first, thruster_points_[i + 1].second);
+		glVertex2f(thruster_vertices_[i].x, thruster_vertices_[i].y);
+		glVertex2f(thruster_vertices_[i + 1].x, thruster_vertices_[i + 1].y);
 		glEnd();
 	}
 }
 
-
+//Adds or substracts from current angle to achieve ship rotation
 void Player::RotateLeft(void){
-	ship_angle_ += 5.0f;
+	ship_angle_ += kDefaultMove;
 	is_moving_left_ = false;
 }
 
 void Player::RotateRight(void) {
-	ship_angle_ -= 5.0f;
+	ship_angle_ -= kDefaultMove;
 	is_moving_right_ = false;
 }
 
@@ -105,10 +73,32 @@ void Player::MoveForward(void) {
 	float warp_height = max_height_ / 2 + ship_height_;
 
 	float radians = MathUtilities().degrees_to_radians(ship_angle_);
-	position_.x -=  kDefaultMove * float(sin(radians));
+	
+	//Adding a constant value to the current position
+	position_.x -=  kDefaultMove * float(sin(radians)); 
 	position_.y +=  kDefaultMove * float(cos(radians));
 
 	//Warping
 	Warp(position_.x, -warp_width, warp_width);
 	Warp(position_.y, -warp_height, warp_height);
+}
+
+void Player::FillVertices() {
+	vertices_.push_back(Vector2(0.0f, 30.0f));
+	vertices_.push_back(Vector2(-40.0f, -40.0f));
+	vertices_.push_back(Vector2(-7.5f, -30.0f));
+	vertices_.push_back(Vector2(0.0f, -40.0f));
+	vertices_.push_back(Vector2(7.5f, -30.0f));
+	vertices_.push_back(Vector2(40.0f, -40.0f));
+	vertices_.push_back(Vector2(0.0f, 30.0f));
+	vertices_.push_back(Vector2(7.5f, -30.0f));
+	vertices_.push_back(Vector2(0.0f, 30.0f));
+	vertices_.push_back(Vector2(-7.5f, -30.0f));
+
+	thruster_vertices_.push_back(Vector2(-20.0f, -50.0f));
+	thruster_vertices_.push_back(Vector2(-20.0f, -60.0f));
+	thruster_vertices_.push_back(Vector2(0.0f, -50.0f));
+	thruster_vertices_.push_back(Vector2(0.0f, -70.0f));
+	thruster_vertices_.push_back(Vector2(20.0f, -50.0f));
+	thruster_vertices_.push_back(Vector2(20.0f, -60.0f));
 }
