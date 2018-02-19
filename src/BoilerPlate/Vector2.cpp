@@ -37,9 +37,6 @@ void Vector2::Normalize() {
 	y *= inverse_factor;
 
 	length = Length();
-
-	x *= inverse_factor;
-	y *= inverse_factor;
 }
 
 Vector2& Vector2::operator=(const Vector2& target) {

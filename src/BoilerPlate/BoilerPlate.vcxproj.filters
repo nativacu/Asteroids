@@ -21,6 +21,10 @@
     <ClCompile Include="Vector4.cpp">
       <Filter>Engine\Source files</Filter>
     </ClCompile>
+    <ClCompile Include="Asteroid.cpp">
+      <Filter>Engine\Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="Entity.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.hpp" />
@@ -41,6 +45,10 @@
     <ClInclude Include="Vector4.hpp">
       <Filter>Engine\Header files</Filter>
     </ClInclude>
+    <ClInclude Include="Asteroid.hpp">
+      <Filter>Engine\Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Entity.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Engine">
