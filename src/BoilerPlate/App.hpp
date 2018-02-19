@@ -9,6 +9,8 @@
 // Asteroids
 #include "SDLEvent.hpp"
 #include "TimeManager.hpp"
+#include "Asteroid.hpp"
+#include "Player.hpp"
 
 namespace Engine
 {
@@ -66,6 +68,8 @@ namespace Engine
 		SDL_GLContext						m_context;
 		GameState::State					m_state;
 		Engine::TimeManager*				m_timer;
+		Player								m_ship;
+		Asteroid							m_asteriod;
 
 	};
 }

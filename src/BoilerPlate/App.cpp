@@ -9,9 +9,9 @@
 //New includes
 #include "ColorScheme.h"
 #include "Player.hpp"
+#include "Asteroid.hpp"
 
-Player kShip;
-float default_move = 8.0f;
+
 namespace Engine
 {
 	const float DESIRED_FRAME_RATE = 60.0f;
@@ -43,7 +43,7 @@ namespace Engine
 		}
 
 		m_state = GameState::RUNNING;
-
+	
 		SDL_Event event;
 		while (m_state == GameState::RUNNING)
 		{
@@ -87,24 +87,22 @@ namespace Engine
 		switch (keyBoardEvent.keysym.scancode)
 		{
 		case SDL_SCANCODE_DOWN:
-			::kShip.moving_up = false;
-			::kShip.Move(Vector2(0,-default_move));
+			m_ship.moving_up = false;
 			break;
 
 		case SDL_SCANCODE_UP:
-			::kShip.moving_up = true;
-			::kShip.Move(Vector2(0, default_move));
-			
+			m_ship.moving_up = true;
+			m_ship.MoveForward();
 			break;
 
 		case SDL_SCANCODE_RIGHT:
-			::kShip.moving_up = false;
-			::kShip.Move(Vector2(default_move, 0));
+			m_ship.moving_up = false;
+			m_ship.moving_right = true;
 			break;
 
 		case SDL_SCANCODE_LEFT:
-			::kShip.moving_up = false;
-			::kShip.Move(Vector2(-default_move, 0));
+			m_ship.moving_up = false;
+			m_ship.moving_left = true;
 			break;
 
 		default:
@@ -118,7 +116,8 @@ namespace Engine
 		switch (keyBoardEvent.keysym.scancode)
 		{
 		case SDL_SCANCODE_UP:
-			::kShip.moving_up = false;
+			m_ship.moving_up = false;
+			m_ship.moving_left = false;
 			break;
 
 		case SDL_SCANCODE_ESCAPE:
@@ -159,7 +158,9 @@ namespace Engine
 		ColorScheme cs;
 		glClear(GL_COLOR_BUFFER_BIT);
 		cs.change_background(cs.green);
-		::kShip.Render();
+		m_ship.Render();
+		m_asteriod.Render();
+
 		SDL_GL_SwapWindow(m_mainWindow);
 	}
 
@@ -259,8 +260,8 @@ namespace Engine
 		m_width = width;
 		m_height = height;
 
-		::kShip.window_width = width;
-		::kShip.window_height = height;
+		m_ship.window_width = width;
+		m_ship.window_height = height;
 
 		SetupViewport();
 	}
