@@ -1,7 +1,9 @@
 #pragma once
-static float PI = 3.14159265f;
+
 class MathUtilities
 {
+private:
+	 float PI = 3.14159265f;
 public:
 	MathUtilities();
 	~MathUtilities();

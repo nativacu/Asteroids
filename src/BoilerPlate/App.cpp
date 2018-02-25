@@ -1,6 +1,7 @@
 #include "App.hpp"
 #include <iostream>
 #include <algorithm>
+#include <time.h>
 
 // OpenGL includes
 #include <GL/glew.h>
@@ -24,9 +25,14 @@ namespace Engine
 		, m_nUpdates(0)
 		, m_timer(new TimeManager)
 		, m_mainWindow(nullptr)
+		, m_asteroid_count(5)
 	{
+		m_ship = new Player();
 		m_state = GameState::UNINITIALIZED;
 		m_lastFrameTime = m_timer->GetElapsedTimeInSeconds();
+		for (int i = 0; i < m_asteroid_count; i++) {
+			m_asteroids.push_back(Asteroid());
+		}
 	}
 
 	App::~App()
@@ -86,27 +92,43 @@ namespace Engine
 	{
 		switch (keyBoardEvent.keysym.scancode)
 		{
-		case SDL_SCANCODE_DOWN:
-			m_ship.moving_up = false;
-			break;
-
 		case SDL_SCANCODE_UP:
-			m_ship.moving_up = true;
-			m_ship.MoveForward();
+			m_ship->SetIsMovingUp(true);
+			m_ship->MoveForward();
 			break;
 
 		case SDL_SCANCODE_RIGHT:
-			m_ship.moving_up = false;
-			m_ship.moving_right = true;
+			m_ship->SetIsMovingRight(true);
 			break;
 
 		case SDL_SCANCODE_LEFT:
-			m_ship.moving_up = false;
-			m_ship.moving_left = true;
+			m_ship->SetIsMovingLeft(true);
+			break;
+
+		case SDL_SCANCODE_M:
+			if (m_asteroid_count < 10) {
+				m_asteroid_count++;
+				m_asteroids.push_back(Asteroid());
+			}
+			break;
+
+		case SDL_SCANCODE_L:
+			if (m_asteroid_count > 0) {
+				m_asteroid_count--;
+				m_asteroids.pop_back();
+			}
+			break;
+
+		case SDL_SCANCODE_D:
+			m_ship->is_debugging_ = true;
+			for (int i = 0; i < m_asteroids.size(); i++) {
+				m_asteroids[i].is_debugging_ = true;
+			}
 			break;
 
 		default:
 			SDL_Log("%S was pressed.", keyBoardEvent.keysym.scancode);
+			SDL_Log("%d",m_asteroids.size());
 			break;
 		}
 	}
@@ -116,8 +138,13 @@ namespace Engine
 		switch (keyBoardEvent.keysym.scancode)
 		{
 		case SDL_SCANCODE_UP:
-			m_ship.moving_up = false;
-			m_ship.moving_left = false;
+			m_ship->SetIsMovingUp(false);
+			m_ship->SetIsMovingRight(false);
+			m_ship->SetIsMovingLeft(false);
+			m_ship->is_debugging_ = false;
+			for (int i = 0; i < m_asteroids.size(); i++) {
+				m_asteroids[i].is_debugging_ = false;
+			}
 			break;
 
 		case SDL_SCANCODE_ESCAPE:
@@ -149,8 +176,12 @@ namespace Engine
 		//double elapsedTime = endTime - startTime;        
 
 		m_lastFrameTime = m_timer->GetElapsedTimeInSeconds();
-
 		m_nUpdates++;
+		for (int i = 0; i < m_asteroids.size(); i++) {
+			m_asteroids[i].Update(DESIRED_FRAME_TIME);
+		}
+		m_ship->Update(DESIRED_FRAME_TIME);
+		
 	}
 
 	void App::Render()
@@ -158,9 +189,10 @@ namespace Engine
 		ColorScheme cs;
 		glClear(GL_COLOR_BUFFER_BIT);
 		cs.change_background(cs.green);
-		m_ship.Render();
-		m_asteriod.Render();
-
+		m_ship->Render();
+		for (int i = 0; i < m_asteroid_count; i++) {
+			m_asteroids[i].Render();
+		}
 		SDL_GL_SwapWindow(m_mainWindow);
 	}
 
@@ -260,8 +292,7 @@ namespace Engine
 		m_width = width;
 		m_height = height;
 
-		m_ship.window_width = width;
-		m_ship.window_height = height;
+		m_ship->SetWindowDimensions(width,height);
 
 		SetupViewport();
 	}

@@ -11,10 +11,13 @@ public:
 	Asteroid(SizeOptions);
 	~Asteroid();
 	void FillVertices(void) override;
+	void Update(float) override;
 	int GetSize(void);
+	void ApplyImpulse(Vector2);
 
 private:
 	SizeOptions size_;
+	float rotation_angle_ = 120.0f;
 };
 
 
