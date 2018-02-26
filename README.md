@@ -1,9 +1,23 @@
 # Asteroids
 Controllers:
 
-- Up key
-- Down key
-- Right key
-- Left key
+Movement:
+  - Up key
+  - Down key
+  - Right key
+  - Left key
+  
+Shooting:
+  -Space Bar
+ 
+Debugging/Framerate:
+  -D key
+  -F key
+  
+Adding Asteroids:
+  -M key
 
-Working V0.0.1
+Removing Asteroids:
+  -L key
+  
+Working V0.0.5
