@@ -44,6 +44,7 @@ namespace Engine
 		bool Init							( );
 		void Update							( );
 		void DrawDebugLines					( );
+		void DrawDebugBulletLines();
 		void ShootAsteroids					( );
 		void Render							( );
 	private:

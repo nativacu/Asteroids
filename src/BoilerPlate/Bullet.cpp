@@ -3,9 +3,6 @@
 Bullet::Bullet(Player ship){
 	MathUtilities m;
 	angle_ = ship.GetAngle();
-	float radians = m.degrees_to_radians(angle_);
-	float ship_radius = ship.GetRadius();
-	Vector2 ship_position = ship.GetPosition();
 	position_ = GetBulletPosition(ship);
 	FillVertices();
 	radius_ = 2.0f;
@@ -24,9 +21,10 @@ void Bullet::FillVertices() {
 }
 
 void Bullet::Update(float delta_time) {
-	life_span_--;
+	if (life_span_ > 0)
+		life_span_--;
 
-	if (life_span_ <= 0) {
+	if (life_span_ == 0) {
 		is_alive_ = false;
 	}
 
@@ -38,6 +36,10 @@ bool Bullet::GetIsAlive() {
 	return is_alive_;
 }
 
+void Bullet::SetIsAlive(bool is_alive) {
+	is_alive_ = is_alive;
+}
+
 Vector2 Bullet::GetBulletPosition(Player ship) {
 
 	MathUtilities m;
@@ -45,8 +47,8 @@ Vector2 Bullet::GetBulletPosition(Player ship) {
 	Vector2 ship_position = ship.GetPosition();
 	float ship_radius = ship.GetRadius();
 	Vector2 position;
-	position.x = ship_position.x + ship_radius * -sinf(radians);
-	position.y = ship_position.y + ship_radius * cosf(radians);
+	position.x += ship_position.x  + ship_radius * -sinf(radians);
+	position.y += ship_position.y + ship_radius * cosf(radians);
 	
 	return  position;
 }

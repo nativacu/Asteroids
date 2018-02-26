@@ -37,6 +37,7 @@ public:
 	float GetEntitiesDistance(Entity);
 	float GetEntitiesDistance(Vector2);
 	Vector2 GetPosition();
+	void SetPosition(Vector2);
 	bool GetIsDebugging();
 	float GetRadius();
 	void IsColliding(Entity);

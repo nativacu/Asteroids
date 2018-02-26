@@ -131,11 +131,14 @@ namespace Engine
 			break;
 
 		case SDL_SCANCODE_SPACE:
-			bullets_.push_back(Bullet(*ship_));
+			if (bullets_.size() < 6) {
+				bullets_.push_back(Bullet(*ship_));
+			}
 			break;
 
 		default:
 			SDL_Log("%S was pressed.", keyBoardEvent.keysym.scancode);
+			SDL_Log("%d",asteroids_.size());
 			break;
 		}
 	}
@@ -181,14 +184,15 @@ namespace Engine
 		m_lastFrameTime = m_timer->GetElapsedTimeInSeconds();
 		m_nUpdates++;
 
+		
 		for (int i = 0; i < asteroids_.size(); i++) {
 			ship_->IsColliding(asteroids_[i]);
 			if (ship_->GetIsColliding() && !ship_->GetIsDebugging()) {
 				ship_->SetIsAlive(false);
 			}
-			//ShootAsteroids();
 			asteroids_[i].Update(DESIRED_FRAME_TIME);
 		}
+		ShootAsteroids();
 
 		ship_->Update(DESIRED_FRAME_TIME);
 
@@ -210,6 +214,9 @@ namespace Engine
 				if (bullets_[i].GetIsAlive()) {
 					bullets_[i].Render();
 				}
+				else {
+					bullets_.erase(bullets_.begin() + i);
+				}
 			}
 		}
 		
@@ -223,6 +230,7 @@ namespace Engine
 				asteroids_[i].SetIsColliding(false);
 			}
 			DrawDebugLines();
+			DrawDebugBulletLines();
 		}
 
 		SDL_GL_SwapWindow(m_mainWindow);
@@ -373,27 +381,114 @@ namespace Engine
 		glColor3f(1, 1, 1);
 	}
 
-	
-	void App::ShootAsteroids() {
-		int next_size = 0;
-		for (int i = 0; i < bullets_.size(); i++) {
-			for (int j = 0; j < asteroids_.size(); j++) {
-				asteroids_[j].WasShot(bullets_[i]);
-				if (asteroids_[j].GetWasShot()) {
-					//asteroid_count_--;
+	void App::DrawDebugBulletLines() {
+		ColorScheme color;
 
-					if (asteroids_[j].GetSize() == 3) {
-						//asteroids_.push_back(Asteroid(2));
-						//asteroids_.push_back(Asteroid(2));
-					}
+		glLoadIdentity();
 
-					else if (asteroids_[j].GetSize() == 2) {
-						asteroids_.push_back(Asteroid(1));
-						asteroids_.push_back(Asteroid(1));
-					}
+		glBegin(GL_LINE_LOOP);
+		for (int k = 0; k < bullets_.size(); k++) {
+			for (int i = 0; i < asteroid_count_; i++) {
+				float proximity_measurement = 2 * asteroids_[i].GetRadius();
+				float distance = bullets_[k].GetEntitiesDistance(asteroids_[i]);
+				Vector2 asteroid_position = asteroids_[i].GetPosition();
+				Vector2 bullet_position = bullets_[k].GetPosition();
+				float added_radius = bullets_[k].GetRadius() + proximity_measurement;
+
+				if (distance <= added_radius) {
+					asteroids_[i].SetWasShot(true);
+					glColor4f(color.yellow.red, color.yellow.green, color.yellow.blue, color.yellow.opacity);
+					glVertex2f(bullet_position.x, bullet_position.y);
+					glVertex2f(asteroid_position.x, asteroid_position.y);
 				}
 			}
 		}
+		glEnd();
+
+		ship_->SetIsColliding(false);
+
+		glColor3f(1, 1, 1);
 	}
-		
+
+	/*
+	void App::ShootAsteroids()
+	{
+		bool ifCollision = false;
+		for (int i = 0; i < asteroids_.size(); i++)
+		{
+			Vector2 asteroid_position = asteroids_[i].GetPosition();
+	
+			for (int j = 0; j < bullets_.size(); j++)
+			{
+				Vector2 bullet_position = bullets_[j].GetPosition();
+
+				float distanceToAsteroid = asteroids_[i].GetEntitiesDistance(bullets_[j]);
+
+				if (distanceToAsteroid <= (bullets_[j].GetRadius() + asteroids_[i].GetRadius()))
+				{
+					if (asteroids_[i].GetSize() == 3)
+					{
+						asteroids_.push_back(Asteroid(2));
+						asteroids_.push_back(Asteroid(2));
+						asteroids_.erase(asteroids_.begin() + i);
+						bullets_.erase(bullets_.begin() + j);
+						ifCollision = true;
+					}
+					else if (asteroids_[i].GetSize() == 2)
+					{
+						asteroids_.push_back(Asteroid(1));
+						asteroids_.push_back(Asteroid(1));
+						asteroids_.erase(asteroids_.begin() + i);
+						bullets_.erase(bullets_.begin() + j);
+						ifCollision = true;;
+					}
+					else
+					{
+						asteroids_.erase(asteroids_.begin() + i);
+						bullets_.erase(bullets_.begin() + j);
+						ifCollision = true;
+					}
+				}
+				break;
+			}
+			if (ifCollision)
+				break;
+		}
+	}
+
+	*/
+	void App::ShootAsteroids()
+	{
+		bool finish = false;
+
+		int next_size = 0;
+		for (int i = 0; i < asteroids_.size(); i++)
+		{
+			for (int j = 0; j < bullets_.size(); j++)
+			{
+				asteroids_[i].WasShot(bullets_[j]);
+				if (asteroids_[i].GetWasShot()) {
+					bullets_.erase(bullets_.begin() + j);
+					asteroids_.erase(asteroids_.begin() + i);
+					std::cout << "test" << std::endl;
+					finish = true;
+					if (asteroids_[i].GetSize() == 3){
+						//asteroids_.push_back(Asteroid(2));
+						//asteroids_.push_back(Asteroid(2));
+					}
+
+					else if (asteroids_[i].GetSize() == 2)
+					{
+						//asteroids_.push_back(Asteroid(1));
+						//asteroids_.push_back(Asteroid(1));
+					}
+				}
+				break;
+			}
+
+			if (finish) break;
+		}
+	}
+	
+	
 }

@@ -151,6 +151,10 @@ void Entity::SetIsColliding(bool collide) {
 	is_colliding_ = collide;
 }
 
+void Entity::SetPosition(Vector2 new_position) {
+	position_ = new_position;
+}
+
 void Entity::IsColliding(Entity asteroid) {
 	float added_radius = radius_ + asteroid.GetRadius();
 	float distance = GetEntitiesDistance(asteroid);
