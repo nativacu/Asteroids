@@ -131,9 +131,9 @@ namespace Engine
 			break;
 
 		case SDL_SCANCODE_SPACE:
-			if (bullets_.size() < 6) {
+			//if (bullets_.size() < 6) {
 				bullets_.push_back(Bullet(*ship_));
-			}
+			//}
 			break;
 
 		default:
@@ -220,13 +220,13 @@ namespace Engine
 			}
 		}
 		
-		for (int i = 0; i < asteroid_count_; i++) {
+		for (int i = 0; i < asteroids_.size(); i++) {
 			asteroids_[i].Render();
 		}
 
 		if (ship_->GetIsDebugging()) {
 			ship_->SetIsColliding(false);
-			for (int i = 0; i < asteroid_count_; i++) {
+			for (int i = 0; i < asteroids_.size(); i++) {
 				asteroids_[i].SetIsColliding(false);
 			}
 			DrawDebugLines();
@@ -361,7 +361,7 @@ namespace Engine
 		int j = 0;
 
 		glBegin(GL_LINE_LOOP);
-		for (int i = 0; i < asteroid_count_; i++) {
+		for (int i = 0; i < asteroids_.size(); i++) {
 			float distance = ship_->GetEntitiesDistance(asteroids_[i]);
 			Vector2 asteroid_position = asteroids_[i].GetPosition();
 			float added_radius = proximity_measurement + asteroids_[i].GetRadius();
@@ -388,7 +388,7 @@ namespace Engine
 
 		glBegin(GL_LINE_LOOP);
 		for (int k = 0; k < bullets_.size(); k++) {
-			for (int i = 0; i < asteroid_count_; i++) {
+			for (int i = 0; i < asteroids_.size(); i++) {
 				float proximity_measurement = 2 * asteroids_[i].GetRadius();
 				float distance = bullets_[k].GetEntitiesDistance(asteroids_[i]);
 				Vector2 asteroid_position = asteroids_[i].GetPosition();
@@ -459,7 +459,7 @@ namespace Engine
 	*/
 	void App::ShootAsteroids()
 	{
-		bool finish = false;
+		bool is_asteroid_deleted = false;
 
 		int next_size = 0;
 		for (int i = 0; i < asteroids_.size(); i++)
@@ -468,25 +468,29 @@ namespace Engine
 			{
 				asteroids_[i].WasShot(bullets_[j]);
 				if (asteroids_[i].GetWasShot()) {
-					bullets_.erase(bullets_.begin() + j);
+					bullets_.pop_back();
 					asteroids_.erase(asteroids_.begin() + i);
+					asteroid_count_--;
 					std::cout << "test" << std::endl;
-					finish = true;
+					is_asteroid_deleted = true;
 					if (asteroids_[i].GetSize() == 3){
-						//asteroids_.push_back(Asteroid(2));
-						//asteroids_.push_back(Asteroid(2));
+						asteroids_.push_back(Asteroid(2));
+						asteroids_.push_back(Asteroid(2));
+						asteroid_count_ += 2;
 					}
 
 					else if (asteroids_[i].GetSize() == 2)
 					{
-						//asteroids_.push_back(Asteroid(1));
-						//asteroids_.push_back(Asteroid(1));
+						asteroids_.push_back(Asteroid(1));
+						asteroids_.push_back(Asteroid(1));
+						asteroid_count_ += 2;
 					}
+
 				}
 				break;
 			}
 
-			if (finish) break;
+			if (is_asteroid_deleted) break;
 		}
 	}
 	
