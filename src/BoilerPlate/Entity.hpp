@@ -1,6 +1,7 @@
 #pragma once
 #include "Vector2.hpp"
 #include <utility>
+#include "MathUtilities.h"
 #include <vector>
 #include <GL/glew.h>
 #include <SDL2/SDL_opengl.h>
@@ -9,18 +10,20 @@
 class Entity
 {
 protected:
-	Vector2 position_;
+	
 	std::vector<Vector2> vertices_;
 	Vector2	velocity_;
+	Vector2 position_;
+	float radius_;
+	float angle_;
 	float max_width_ = 1136.0f;
 	float min_width_;
 	float max_height_ = 640.0f;
 	float min_height_;
-	float radius_;
-	float angle_;
+	bool is_debugging_ = false;
+	bool is_colliding_ = false;
 
 public:
-	bool is_debugging_ = false;  //Change
 	Entity();
 	~Entity();
 	virtual void FillVertices(void);
@@ -29,6 +32,17 @@ public:
 	virtual void Update(float);
 	float Warp(float&, float, float);
 	void DrawCircle(void);
+	void SetIsDebugging();
 	void SetWindowDimensions(float, float);
+	float GetEntitiesDistance(Entity);
+	float GetEntitiesDistance(Vector2);
+	Vector2 GetPosition();
+	bool GetIsDebugging();
+	float GetRadius();
+	void IsColliding(Entity);
+	bool GetIsColliding(void);
+	virtual void ApplyImpulse(Vector2);
+	float GetAngle(void);
+	void SetIsColliding(bool);
 };
 

@@ -7,12 +7,15 @@ const int kTotalThrusterPoints = 6;
 const float kDefaultMove = 8.0f;
 const float kDefaultThrust = 6.5f;
 const float kMaxSpeed = 200.0f;
+const float kFrictionCoefficient = 0.99f;
 
 class Player : public Entity{
 
+private:
 	float ship_width_ = 50.0f;
 	float ship_height_ = 60.0f;
 	float ship_mass_ = 1.5f;
+	bool is_alive_ = true;
 	bool is_moving_up_;
 	bool is_moving_left_;
 	bool is_moving_right_;
@@ -30,6 +33,7 @@ public:
 	void SetIsMovingLeft(bool);
 	void SetIsMovingRight(bool);
 	void FillVertices(void) override;
-	bool ApplyImpulse(Vector2);
-	
+	void ApplyImpulse(Vector2) override;
+	bool GetIsAlive(void);
+	void SetIsAlive(bool);
 };

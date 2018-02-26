@@ -9,8 +9,8 @@
 
 //New includes
 #include "ColorScheme.h"
-#include "Player.hpp"
-#include "Asteroid.hpp"
+#include "Bullet.hpp"
+
 
 
 namespace Engine
@@ -25,13 +25,15 @@ namespace Engine
 		, m_nUpdates(0)
 		, m_timer(new TimeManager)
 		, m_mainWindow(nullptr)
-		, m_asteroid_count(5)
+		, asteroid_count_(5)
 	{
-		m_ship = new Player();
 		m_state = GameState::UNINITIALIZED;
 		m_lastFrameTime = m_timer->GetElapsedTimeInSeconds();
-		for (int i = 0; i < m_asteroid_count; i++) {
-			m_asteroids.push_back(Asteroid());
+
+		ship_ = new Player();
+
+		for (int i = 0; i < asteroid_count_; i++) {
+			asteroids_.push_back(Asteroid());
 		}
 	}
 
@@ -93,42 +95,47 @@ namespace Engine
 		switch (keyBoardEvent.keysym.scancode)
 		{
 		case SDL_SCANCODE_UP:
-			m_ship->SetIsMovingUp(true);
-			m_ship->MoveForward();
+			ship_->SetIsMovingUp(true);
+			ship_->MoveForward();
 			break;
 
 		case SDL_SCANCODE_RIGHT:
-			m_ship->SetIsMovingRight(true);
+			ship_->SetIsMovingRight(true);
 			break;
 
 		case SDL_SCANCODE_LEFT:
-			m_ship->SetIsMovingLeft(true);
+			ship_->SetIsMovingLeft(true);
 			break;
 
 		case SDL_SCANCODE_M:
-			if (m_asteroid_count < 10) {
-				m_asteroid_count++;
-				m_asteroids.push_back(Asteroid());
+			if (asteroid_count_ < 20) {
+				asteroid_count_++;
+				asteroids_.push_back(Asteroid());
 			}
 			break;
 
 		case SDL_SCANCODE_L:
-			if (m_asteroid_count > 0) {
-				m_asteroid_count--;
-				m_asteroids.pop_back();
+			if (asteroid_count_ > 0) {
+				asteroid_count_--;
+				asteroids_.pop_back();
 			}
 			break;
 
 		case SDL_SCANCODE_D:
-			m_ship->is_debugging_ = true;
-			for (int i = 0; i < m_asteroids.size(); i++) {
-				m_asteroids[i].is_debugging_ = true;
+			if (ship_->GetIsAlive()) {
+				ship_->SetIsDebugging();
+				for (int i = 0; i < asteroids_.size(); i++) {
+					asteroids_[i].SetIsDebugging();
+				}
 			}
+			break;
+
+		case SDL_SCANCODE_SPACE:
+			bullets_.push_back(Bullet(*ship_));
 			break;
 
 		default:
 			SDL_Log("%S was pressed.", keyBoardEvent.keysym.scancode);
-			SDL_Log("%d",m_asteroids.size());
 			break;
 		}
 	}
@@ -138,13 +145,9 @@ namespace Engine
 		switch (keyBoardEvent.keysym.scancode)
 		{
 		case SDL_SCANCODE_UP:
-			m_ship->SetIsMovingUp(false);
-			m_ship->SetIsMovingRight(false);
-			m_ship->SetIsMovingLeft(false);
-			m_ship->is_debugging_ = false;
-			for (int i = 0; i < m_asteroids.size(); i++) {
-				m_asteroids[i].is_debugging_ = false;
-			}
+			ship_->SetIsMovingUp(false);
+			ship_->SetIsMovingRight(false);
+			ship_->SetIsMovingLeft(false);
 			break;
 
 		case SDL_SCANCODE_ESCAPE:
@@ -177,11 +180,22 @@ namespace Engine
 
 		m_lastFrameTime = m_timer->GetElapsedTimeInSeconds();
 		m_nUpdates++;
-		for (int i = 0; i < m_asteroids.size(); i++) {
-			m_asteroids[i].Update(DESIRED_FRAME_TIME);
+
+		for (int i = 0; i < asteroids_.size(); i++) {
+			ship_->IsColliding(asteroids_[i]);
+			if (ship_->GetIsColliding() && !ship_->GetIsDebugging()) {
+				ship_->SetIsAlive(false);
+			}
+			//ShootAsteroids();
+			asteroids_[i].Update(DESIRED_FRAME_TIME);
 		}
-		m_ship->Update(DESIRED_FRAME_TIME);
-		
+
+		ship_->Update(DESIRED_FRAME_TIME);
+
+		for (int i = 0; i < bullets_.size(); i++) {
+			bullets_[i].Update(DESIRED_FRAME_TIME);
+		}
+
 	}
 
 	void App::Render()
@@ -189,10 +203,28 @@ namespace Engine
 		ColorScheme cs;
 		glClear(GL_COLOR_BUFFER_BIT);
 		cs.change_background(cs.green);
-		m_ship->Render();
-		for (int i = 0; i < m_asteroid_count; i++) {
-			m_asteroids[i].Render();
+		
+		if (ship_->GetIsAlive() || ship_->GetIsDebugging()) {
+			ship_->Render();
+			for (int i = 0; i < bullets_.size(); i++) {
+				if (bullets_[i].GetIsAlive()) {
+					bullets_[i].Render();
+				}
+			}
 		}
+		
+		for (int i = 0; i < asteroid_count_; i++) {
+			asteroids_[i].Render();
+		}
+
+		if (ship_->GetIsDebugging()) {
+			ship_->SetIsColliding(false);
+			for (int i = 0; i < asteroid_count_; i++) {
+				asteroids_[i].SetIsColliding(false);
+			}
+			DrawDebugLines();
+		}
+
 		SDL_GL_SwapWindow(m_mainWindow);
 	}
 
@@ -292,7 +324,11 @@ namespace Engine
 		m_width = width;
 		m_height = height;
 
-		m_ship->SetWindowDimensions(width,height);
+
+		ship_->SetWindowDimensions(width, height);
+		for (int i = 0; i < asteroid_count_; i++) {
+			asteroids_[i].SetWindowDimensions(width, height);
+		}
 
 		SetupViewport();
 	}
@@ -307,4 +343,57 @@ namespace Engine
 		//
 		CleanupSDL();
 	}
+
+	void App::DrawDebugLines() {
+		ColorScheme color;
+		
+		glLoadIdentity();
+		float proximity_measurement = 2 * ship_->GetRadius();
+		Vector2 ship_position = ship_->GetPosition();
+		int j = 0;
+
+		glBegin(GL_LINE_LOOP);
+		for (int i = 0; i < asteroid_count_; i++) {
+			float distance = ship_->GetEntitiesDistance(asteroids_[i]);
+			Vector2 asteroid_position = asteroids_[i].GetPosition();
+			float added_radius = proximity_measurement + asteroids_[i].GetRadius();
+
+			if (distance <= added_radius) {
+				asteroids_[i].SetIsColliding(true);
+				ship_->SetIsColliding(true);
+				glColor4f(color.red.red,color.red.green,color.red.blue,color.red.opacity);
+				glVertex2f(ship_position.x, ship_position.y);
+				glVertex2f(asteroid_position.x, asteroid_position.y);
+			}
+		}
+		glEnd();
+
+		ship_->SetIsColliding(false);
+		
+		glColor3f(1, 1, 1);
+	}
+
+	
+	void App::ShootAsteroids() {
+		int next_size = 0;
+		for (int i = 0; i < bullets_.size(); i++) {
+			for (int j = 0; j < asteroids_.size(); j++) {
+				asteroids_[j].WasShot(bullets_[i]);
+				if (asteroids_[j].GetWasShot()) {
+					//asteroid_count_--;
+
+					if (asteroids_[j].GetSize() == 3) {
+						//asteroids_.push_back(Asteroid(2));
+						//asteroids_.push_back(Asteroid(2));
+					}
+
+					else if (asteroids_[j].GetSize() == 2) {
+						asteroids_.push_back(Asteroid(1));
+						asteroids_.push_back(Asteroid(1));
+					}
+				}
+			}
+		}
+	}
+		
 }

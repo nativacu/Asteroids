@@ -11,6 +11,7 @@
 #include "TimeManager.hpp"
 #include "Asteroid.hpp"
 #include "Player.hpp"
+#include "Bullet.hpp"
 #include <vector>
 
 namespace Engine
@@ -42,6 +43,8 @@ namespace Engine
 		void Execute						( );
 		bool Init							( );
 		void Update							( );
+		void DrawDebugLines					( );
+		void ShootAsteroids					( );
 		void Render							( );
 	private:
 		/* =============================================================
@@ -69,10 +72,10 @@ namespace Engine
 		SDL_GLContext						m_context;
 		GameState::State					m_state;
 		Engine::TimeManager*				m_timer;
-		Player*								m_ship;
-		std::vector<Asteroid>				m_asteroids;
-		int									m_asteroid_count;
-
+		std::vector<Asteroid>				asteroids_;
+		Player*								ship_;
+		int									asteroid_count_;
+		std::vector<Bullet>					bullets_;
 	};
 }
 #endif /* GAME_HPP */
