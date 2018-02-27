@@ -2,6 +2,7 @@
 #include <iostream>
 #include <algorithm>
 #include <time.h>
+#include <utility>
 
 // OpenGL includes
 #include <GL/glew.h>
@@ -17,6 +18,9 @@ namespace Engine
 {
 	const float DESIRED_FRAME_RATE = 60.0f;
 	const float DESIRED_FRAME_TIME = 1.0f / DESIRED_FRAME_RATE;
+	const float kXAxisPosition = 300.0f;
+	const float kYAxisPosition = -300.0f;
+	const int kMaxFrameCount = 10;
 
 	App::App(const std::string& title, const int width, const int height)
 		: m_title(title)
@@ -29,11 +33,22 @@ namespace Engine
 	{
 		m_state = GameState::UNINITIALIZED;
 		m_lastFrameTime = m_timer->GetElapsedTimeInSeconds();
-
+		graph_= false;
 		ship_ = new Player();
 
 		for (int i = 0; i < asteroid_count_; i++) {
 			asteroids_.push_back(Asteroid());
+		}
+
+		delta_time_ = DESIRED_FRAME_TIME;
+
+
+		current_frame_position_ = 0;
+		capt_frames_ = std::vector<Vector2>(kMaxFrameCount);
+
+		for (int i = 0; i < capt_frames_.size(); i++)
+		{
+			capt_frames_[i] = Vector2(i, DESIRED_FRAME_TIME);
 		}
 	}
 
@@ -108,6 +123,7 @@ namespace Engine
 			break;
 
 		case SDL_SCANCODE_M:
+			
 			if (asteroid_count_ < 20) {
 				asteroid_count_++;
 				asteroids_.push_back(Asteroid());
@@ -127,6 +143,16 @@ namespace Engine
 				for (int i = 0; i < asteroids_.size(); i++) {
 					asteroids_[i].SetIsDebugging();
 				}
+			}
+			break;
+
+		case SDL_SCANCODE_F:
+			if (graph_) {
+				graph_ = false;
+			}
+
+			else {
+				graph_ = true;
 			}
 			break;
 
@@ -199,6 +225,8 @@ namespace Engine
 		for (int i = 0; i < bullets_.size(); i++) {
 			bullets_[i].Update(DESIRED_FRAME_TIME);
 		}
+		delta_time_ = DESIRED_FRAME_TIME - (endTime - startTime);
+		UpdateFrameSequence();
 
 	}
 
@@ -232,7 +260,7 @@ namespace Engine
 			DrawDebugLines();
 			DrawDebugBulletLines();
 		}
-
+		GetFrameRate();
 		SDL_GL_SwapWindow(m_mainWindow);
 	}
 
@@ -410,53 +438,26 @@ namespace Engine
 		glColor3f(1, 1, 1);
 	}
 
-	/*
-	void App::ShootAsteroids()
+	void App::GetFrameRate()
 	{
-		bool ifCollision = false;
-		for (int i = 0; i < asteroids_.size(); i++)
+		glColor3f(1, 1, 1);
+		glLoadIdentity();
+		glTranslatef(kXAxisPosition, kYAxisPosition, 0.0f);
+		glBegin(GL_LINE_STRIP);
+		glVertex2f(0.0f, 100.0f);
+		glVertex2f(0.0f, 0.0f);
+		glVertex2f(130.0f, 0.0f);
+		glEnd();
+
+		glBegin(GL_LINE_STRIP);
+
+		for (int i = 0; i < kMaxFrameCount; i++)
 		{
-			Vector2 asteroid_position = asteroids_[i].GetPosition();
-	
-			for (int j = 0; j < bullets_.size(); j++)
-			{
-				Vector2 bullet_position = bullets_[j].GetPosition();
-
-				float distanceToAsteroid = asteroids_[i].GetEntitiesDistance(bullets_[j]);
-
-				if (distanceToAsteroid <= (bullets_[j].GetRadius() + asteroids_[i].GetRadius()))
-				{
-					if (asteroids_[i].GetSize() == 3)
-					{
-						asteroids_.push_back(Asteroid(2));
-						asteroids_.push_back(Asteroid(2));
-						asteroids_.erase(asteroids_.begin() + i);
-						bullets_.erase(bullets_.begin() + j);
-						ifCollision = true;
-					}
-					else if (asteroids_[i].GetSize() == 2)
-					{
-						asteroids_.push_back(Asteroid(1));
-						asteroids_.push_back(Asteroid(1));
-						asteroids_.erase(asteroids_.begin() + i);
-						bullets_.erase(bullets_.begin() + j);
-						ifCollision = true;;
-					}
-					else
-					{
-						asteroids_.erase(asteroids_.begin() + i);
-						bullets_.erase(bullets_.begin() + j);
-						ifCollision = true;
-					}
-				}
-				break;
-			}
-			if (ifCollision)
-				break;
+			glVertex2f(10.0f * capt_frames_[i].x, 100000.0f * (DESIRED_FRAME_TIME - capt_frames_[i].y));
 		}
+		glEnd();
 	}
 
-	*/
 	void App::ShootAsteroids()
 	{
 		bool is_asteroid_deleted = false;
@@ -493,6 +494,17 @@ namespace Engine
 			if (is_asteroid_deleted) break;
 		}
 	}
+
 	
-	
+
+	void App::UpdateFrameSequence(void)
+	{
+		capt_frames_[current_frame_position_] = Vector2((float)current_frame_position_, delta_time_);
+		current_frame_position_++;
+
+		if (current_frame_position_ >= kMaxFrameCount)
+			current_frame_position_ = 0;
+	}
 }
+
+
