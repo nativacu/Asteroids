@@ -83,6 +83,7 @@ namespace Engine
 		std::vector<Vector2>					capt_frames_;
 		float									delta_time_;
 		bool									graph_;
+		bool									showingPlot;
 	};
 }
 #endif /* GAME_HPP */

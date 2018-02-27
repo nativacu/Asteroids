@@ -31,16 +31,14 @@ Asteroid::Asteroid(SizeOptions size) {
 Asteroid::Asteroid(int size) {
 	if (size == 3) {
 		size_ = kBig;
-	//	Asteroid(kBig);
 	}
 	if (size == 2) {
 		size_ = kMedium;
-		//Asteroid(kMedium);
 	}
 	else{
 		size_ = kSmall;
-		//Asteroid(kSmall);
 	}
+	
 	FillVertices();
 	velocity_ = 0.0f;
 	radius_ = 25.8f * size_;

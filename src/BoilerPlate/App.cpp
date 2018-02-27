@@ -33,7 +33,7 @@ namespace Engine
 	{
 		m_state = GameState::UNINITIALIZED;
 		m_lastFrameTime = m_timer->GetElapsedTimeInSeconds();
-		graph_= false;
+		graph_ = false;
 		ship_ = new Player();
 
 		for (int i = 0; i < asteroid_count_; i++) {
@@ -147,19 +147,19 @@ namespace Engine
 			break;
 
 		case SDL_SCANCODE_F:
+			SDL_Log("F was pressed.", keyBoardEvent.keysym.scancode);
 			if (graph_) {
 				graph_ = false;
 			}
-
 			else {
 				graph_ = true;
 			}
 			break;
 
 		case SDL_SCANCODE_SPACE:
-			//if (bullets_.size() < 6) {
+			if (bullets_.size() < 6) {
 				bullets_.push_back(Bullet(*ship_));
-			//}
+			}
 			break;
 
 		default:
@@ -182,6 +182,7 @@ namespace Engine
 		case SDL_SCANCODE_ESCAPE:
 			OnExit();
 			break;
+
 		default:
 			//DO NOTHING
 			break;
@@ -196,8 +197,27 @@ namespace Engine
 		// Update code goes here
 		//
 
+		for (int i = 0; i < asteroids_.size(); i++) {
+			ship_->IsColliding(asteroids_[i]);
+			if (ship_->GetIsColliding() && !ship_->GetIsDebugging()) {
+				ship_->SetIsAlive(false);
+			}
+			asteroids_[i].Update(delta_time_);
+		}
+
+		for (int i = 0; i < bullets_.size(); i++) {
+			bullets_[i].Update(delta_time_);
+		}
+
+		ship_->Update(delta_time_);
+
+		ShootAsteroids();
+
 		double endTime = m_timer->GetElapsedTimeInSeconds();
 		double nextTimeFrame = startTime + DESIRED_FRAME_TIME;
+
+		delta_time_ = DESIRED_FRAME_TIME - (endTime - startTime);
+		UpdateFrameSequence();
 
 		while (endTime < nextTimeFrame)
 		{
@@ -209,24 +229,6 @@ namespace Engine
 
 		m_lastFrameTime = m_timer->GetElapsedTimeInSeconds();
 		m_nUpdates++;
-
-		
-		for (int i = 0; i < asteroids_.size(); i++) {
-			ship_->IsColliding(asteroids_[i]);
-			if (ship_->GetIsColliding() && !ship_->GetIsDebugging()) {
-				ship_->SetIsAlive(false);
-			}
-			asteroids_[i].Update(DESIRED_FRAME_TIME);
-		}
-		ShootAsteroids();
-
-		ship_->Update(DESIRED_FRAME_TIME);
-
-		for (int i = 0; i < bullets_.size(); i++) {
-			bullets_[i].Update(DESIRED_FRAME_TIME);
-		}
-		delta_time_ = DESIRED_FRAME_TIME - (endTime - startTime);
-		UpdateFrameSequence();
 
 	}
 
@@ -260,7 +262,10 @@ namespace Engine
 			DrawDebugLines();
 			DrawDebugBulletLines();
 		}
-		GetFrameRate();
+
+		if(graph_)
+			GetFrameRate();
+		
 		SDL_GL_SwapWindow(m_mainWindow);
 	}
 
@@ -461,34 +466,31 @@ namespace Engine
 	void App::ShootAsteroids()
 	{
 		bool is_asteroid_deleted = false;
-
-		int next_size = 0;
 		for (int i = 0; i < asteroids_.size(); i++)
 		{
 			for (int j = 0; j < bullets_.size(); j++)
 			{
 				asteroids_[i].WasShot(bullets_[j]);
 				if (asteroids_[i].GetWasShot()) {
-					bullets_.pop_back();
+					bullets_.erase(bullets_.begin() + j);
 					asteroids_.erase(asteroids_.begin() + i);
 					asteroid_count_--;
 					std::cout << "test" << std::endl;
 					is_asteroid_deleted = true;
+
 					if (asteroids_[i].GetSize() == 3){
 						asteroids_.push_back(Asteroid(2));
 						asteroids_.push_back(Asteroid(2));
 						asteroid_count_ += 2;
 					}
 
-					else if (asteroids_[i].GetSize() == 2)
-					{
+					if (asteroids_[i].GetSize() == 2){
 						asteroids_.push_back(Asteroid(1));
 						asteroids_.push_back(Asteroid(1));
 						asteroid_count_ += 2;
 					}
-
+					break;
 				}
-				break;
 			}
 
 			if (is_asteroid_deleted) break;
