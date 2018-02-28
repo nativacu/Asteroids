@@ -45,6 +45,7 @@ namespace Engine
 		void Update							( );
 		void DrawDebugLines					( );
 		void DrawDebugBulletLines			( );
+		void DrawRespawnShield				( );
 		void GetFrameRate					( );
 		void UpdateFrameSequence			( );
 		void ShootAsteroids					( );

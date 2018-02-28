@@ -170,7 +170,7 @@ namespace Engine
 			break;
 
 		case SDL_SCANCODE_SPACE:
-			if (bullets_.size() < kMaxBullets && ship_->GetIsAlive()) {
+			if (bullets_.size() < kMaxBullets && ship_->GetIsAlive() && !ship_->GetRespawned()) {
 				bullets_.push_back(Bullet(*ship_));
 			}
 			break;
@@ -238,13 +238,27 @@ namespace Engine
 
 		//double elapsedTime = endTime - startTime;   
 		if (ship_->GetRespawned()) {
+			int a = 0;
 			if (endTime - respawn_timer_ < kInmortalitySeconds) {
 				ship_->SetIsColliding(false);
-				ship_->SetIsAlive(true);
+				if (ship_->GetIsAlive() && a > 50) {
+					ship_->SetIsAlive(false);
+					a=0;
+				}
+				else {
+					ship_->SetIsAlive(true);
+					a++;
+				}
 			}
 			else {
+				ship_->SetIsAlive(true);
 				ship_->SetRespawned(false);
 			}
+		}
+
+		if (asteroid_count_ < 5) {
+			asteroids_.push_back(Asteroid());
+			asteroid_count_++;
 		}
 
 		m_lastFrameTime = m_timer->GetElapsedTimeInSeconds();
@@ -281,6 +295,10 @@ namespace Engine
 			}
 			DrawDebugLines();
 			DrawDebugBulletLines();
+		}
+
+		if (ship_->GetRespawned()) {
+		//	ship_->DrawCircle();
 		}
 
 		if (graph_) {
@@ -551,6 +569,7 @@ namespace Engine
 			life_factor++;
 		}
 	}
+
 }
 
 

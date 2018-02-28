@@ -68,8 +68,8 @@ int Asteroid::GetSize() {
 
 void Asteroid::ApplyImpulse(Vector2 impulse){
 	MathUtilities math_util;
-	velocity_.x -= (impulse.x) * sinf(math_util.DegreesToRadians(angle_)) + size_;
-	velocity_.y += (impulse.y) * cosf(math_util.DegreesToRadians(angle_)) + size_;
+	velocity_.x -= (impulse.x) * sinf(math_util.DegreesToRadians(angle_)) * 2.0f/ size_;
+	velocity_.y += (impulse.y) * cosf(math_util.DegreesToRadians(angle_)) * 2.0f/ size_;
 }
 
 
