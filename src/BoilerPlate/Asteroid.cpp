@@ -9,7 +9,7 @@ Asteroid::Asteroid(){
 	radius_ = 25.8f * size_;
 	position_.x = rand() % static_cast<int>(max_width_) + radius_;
 	position_.y = rand() % static_cast<int>(max_height_) + radius_;
-	angle_ = rand() % 360 + 44;
+	angle_ = static_cast <float>(rand() % 360 + 44);
 	ApplyImpulse(Vector2(90.0f));
 	is_colliding_ = false;
 	was_shot_ = false;
@@ -22,7 +22,7 @@ Asteroid::Asteroid(SizeOptions size) {
 	radius_ = 25.8f * size_;
 	position_.x = rand() % static_cast<int>(max_width_) + radius_;
 	position_.y = rand() % static_cast<int>(max_height_) + radius_;
-	angle_ = rand() % 360 + 44;
+	angle_ = static_cast <float>(rand() % 360 + 44);
 	ApplyImpulse(Vector2(90.0f));
 	is_colliding_ = false;
 	was_shot_ = false;
@@ -31,23 +31,21 @@ Asteroid::Asteroid(SizeOptions size) {
 Asteroid::Asteroid(int size) {
 	if (size == 3) {
 		size_ = kBig;
-	//	Asteroid(kBig);
 	}
 	if (size == 2) {
 		size_ = kMedium;
-		//Asteroid(kMedium);
 	}
 	else{
 		size_ = kSmall;
-		//Asteroid(kSmall);
 	}
+	
 	FillVertices();
 	velocity_ = 0.0f;
 	radius_ = 25.8f * size_;
 	position_.x = rand() % static_cast<int>(max_width_) + radius_;
 	position_.y = rand() % static_cast<int>(max_height_) + radius_;
-	angle_ = rand() % 360 + 44;
-	ApplyImpulse(Vector2(90.0f));
+	angle_ = static_cast <float>(rand() % 360 + 44);
+	ApplyImpulse(Vector2(120.0f));
 	is_colliding_ = false;
 	was_shot_ = false;
 }
@@ -69,8 +67,9 @@ int Asteroid::GetSize() {
 }
 
 void Asteroid::ApplyImpulse(Vector2 impulse){
-	velocity_.x -= (impulse.x) * sinf(MathUtilities().degrees_to_radians(angle_)) + size_;
-	velocity_.y += (impulse.y) * cosf(MathUtilities().degrees_to_radians(angle_)) + size_;
+	MathUtilities math_util;
+	velocity_.x -= (impulse.x) * sinf(math_util.DegreesToRadians(angle_)) + size_;
+	velocity_.y += (impulse.y) * cosf(math_util.DegreesToRadians(angle_)) + size_;
 }
 
 

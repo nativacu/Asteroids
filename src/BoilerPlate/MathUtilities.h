@@ -9,47 +9,47 @@ public:
 	~MathUtilities();
 
 	//Function for getting the nearest int of a given float
-	int float_to_int(float current_number);
+	int FloatToInt(float current_number);
 
 	//Function for getting the nearest even int of a given float
-	int float_to_even_int(float current_number);
+	int FloatToEvenInt(float current_number);
 
 	//Template function that results in the maximum of the given values whether they are 2, 3 or 4 (or 0 if there's none)
-	template <class number> number get_max(number x, number y);
-	template <class number> number get_max(number x, number y, number z);
-	template <class number> number get_max(number s, number x, number y, number z);
+	template <class number> number GetMax(number x, number y);
+	template <class number> number GetMax(number x, number y, number z);
+	template <class number> number GetMax(number s, number x, number y, number z);
 
 	//Template function that results in the minimum of the given values whether they are 2, 3 or 4 (or 0 if there's none)
-	template <class number> number get_min(number x, number y);
-	template <class number> number get_min(number x, number y, number z);
-	template <class number> number get_min(number s, number x, number y, number z);
+	template <class number> number GetMin(number x, number y);
+	template <class number> number GetMin(number x, number y, number z);
+	template <class number> number GetMin(number s, number x, number y, number z);
 
 	//Template function for clamping a given value into the provided limits
-	template <class number> number clamp_value(number x, number min, number max);
+	template <class number> number ClampValue(number x, number min, number max);
 
 	//Function for converting degrees to radians
-	float degrees_to_radians(float angle);
+	float DegreesToRadians(float angle);
 
 	//Function for converting radians to degrees
-	float radians_to_degrees(float angle);
+	float RadiansToDegrees(float angle);
 
 	//Function for calculating the angular distance of two given angles in degrees 
-	float angular_distance_deg(float angle, float angle2);
-	float angular_distance_rad(float angle, float angle2);
+	float AngularDistanceDegrees(float angle, float angle2);
+	float AngularDistanceRadians(float angle, float angle2);
 
 	//Return the absolute value of a given number
-	float abs(float x);
+	float Abs(float x);
 
 	//Function to determine if a number is a power of two
-	bool is_power_of_two(int number);
+	bool IsPowerOfTwo(int number);
 
 	//Function to interpolate a float (or an int) between a start value and an end value, at a fraction specified from start (0.0) to end (1.0)
-	template <class number> number interpolate(number min, number max, float fraction);
+	template <class number> number Interpolate(number min, number max, float fraction);
 
 };
 
 template<class number>
-inline number MathUtilities::get_max(number x, number y)
+inline number MathUtilities::GetMax(number x, number y)
 {
 	if (x < y) {
 		return y;
@@ -66,7 +66,7 @@ inline number MathUtilities::get_max(number x, number y)
 
 
 template<class number>
-inline number MathUtilities::get_max(number x, number y, number z) {
+inline number MathUtilities::GetMax(number x, number y, number z) {
 	number max = x;
 	if (y > max) {
 		max = y;
@@ -85,7 +85,7 @@ inline number MathUtilities::get_max(number x, number y, number z) {
 
 
 template<class number>
-inline number MathUtilities::get_max(number s, number x, number y, number z) {
+inline number MathUtilities::GetMax(number s, number x, number y, number z) {
 	number max = s;
 
 	if (x > max) {
@@ -107,7 +107,7 @@ inline number MathUtilities::get_max(number s, number x, number y, number z) {
 }
 
 template<class number>
-inline number MathUtilities::get_min(number x, number y)
+inline number MathUtilities::GetMin(number x, number y)
 {
 	if (x > y) {
 		return y;
@@ -124,7 +124,7 @@ inline number MathUtilities::get_min(number x, number y)
 }
 
 template<class number>
-inline number MathUtilities::get_min(number x, number y, number z)
+inline number MathUtilities::GetMin(number x, number y, number z)
 {
 	number min = x;
 	if (y < min) {
@@ -143,7 +143,7 @@ inline number MathUtilities::get_min(number x, number y, number z)
 }
 
 template<class number>
-inline number MathUtilities::get_min(number s, number x, number y, number z)
+inline number MathUtilities::GetMin(number s, number x, number y, number z)
 {
 	number min = s;
 
@@ -167,7 +167,7 @@ inline number MathUtilities::get_min(number s, number x, number y, number z)
 }
 
 template<class number>
-inline number MathUtilities::clamp_value(number x, number min, number max)
+inline number MathUtilities::ClampValue(number x, number min, number max)
 {
 	if (x < min) {
 		x = min;
@@ -181,7 +181,7 @@ inline number MathUtilities::clamp_value(number x, number min, number max)
 }
 
 template<class number>
-inline number MathUtilities::interpolate(number min, number max, float fraction)
+inline number MathUtilities::Interpolate(number min, number max, float fraction)
 {
 	return min + (max - min) * fraction;
 }

@@ -6,6 +6,7 @@
 // C++ STL
 #include <cassert>
 #include <iostream>
+#include <ctime>
 
 // 
 #include "App.hpp"

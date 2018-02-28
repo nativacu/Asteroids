@@ -44,8 +44,11 @@ namespace Engine
 		bool Init							( );
 		void Update							( );
 		void DrawDebugLines					( );
-		void DrawDebugBulletLines();
+		void DrawDebugBulletLines			( );
+		void GetFrameRate					( );
+		void UpdateFrameSequence			( );
 		void ShootAsteroids					( );
+		void DisplayLives                   ( );
 		void Render							( );
 	private:
 		/* =============================================================
@@ -64,19 +67,25 @@ namespace Engine
 		/* =============================================================
 		 * MEMBERS
 		 * ============================================================= */
-		int									m_width;
-		int									m_height;
-		int									m_nUpdates;
-		double								m_lastFrameTime;
-		std::string							m_title;
-		SDL_Window*							m_mainWindow;
-		SDL_GLContext						m_context;
-		GameState::State					m_state;
-		Engine::TimeManager*				m_timer;
-		std::vector<Asteroid>				asteroids_;
-		Player*								ship_;
-		int									asteroid_count_;
-		std::vector<Bullet>					bullets_;
+		int										m_width;
+		int										m_height;
+		int										m_nUpdates;
+		double									m_lastFrameTime;
+		std::string								m_title;
+		SDL_Window*								m_mainWindow;
+		SDL_GLContext							m_context;
+		GameState::State						m_state;
+		Engine::TimeManager*					m_timer;
+		std::vector<Asteroid>					asteroids_;
+		Player*									ship_;
+		int										asteroid_count_;
+		std::vector<Bullet>						bullets_;
+		int										current_frame_position_;
+		std::vector<Vector2>					capt_frames_;
+		float									delta_time_;
+		bool									graph_;
+		int										life_counter_;
+		double									respawn_timer_;
 	};
 }
 #endif /* GAME_HPP */

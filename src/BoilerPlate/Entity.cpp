@@ -138,7 +138,7 @@ bool Entity::GetIsColliding() {
 
 void Entity::ApplyImpulse(Vector2 impulse){
 	MathUtilities math;
-	float angle = math.degrees_to_radians(angle_);
+	float angle = math.DegreesToRadians(angle_);
 	velocity_.x -= (impulse.x) * sinf(angle);
 	velocity_.y += (impulse.y) * cosf(angle);
 }
