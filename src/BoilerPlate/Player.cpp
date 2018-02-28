@@ -92,7 +92,7 @@ void Player::SetIsMovingRight(bool is_moving_right) {
 
 void Player::MoveForward(void) {
 
-	float radians = kMathUtil.degrees_to_radians(angle_);
+	float radians = kMathUtil.DegreesToRadians(angle_);
 	
 	//Adding a constant value to the current position
 	position_.x -=  kDefaultMove * float(sin(radians)); 
@@ -124,8 +124,8 @@ void Player::FillVertices() {
 
 void Player::ApplyImpulse(Vector2 impulse) {
 	if (ship_mass_ > 0) {
-		velocity_.x -= (impulse.x / ship_mass_) * sinf(kMathUtil.degrees_to_radians(angle_));
-		velocity_.y += (impulse.y / ship_mass_) * cosf(kMathUtil.degrees_to_radians(angle_));
+		velocity_.x -= (impulse.x / ship_mass_) * sinf(kMathUtil.DegreesToRadians(angle_));
+		velocity_.y += (impulse.y / ship_mass_) * cosf(kMathUtil.DegreesToRadians(angle_));
 	}
 	
 }
@@ -137,4 +137,23 @@ bool Player::GetIsAlive(void)
 
 void Player::SetIsAlive(bool is_alive) {
 	is_alive_ = is_alive;
+}
+
+bool Player::GetRespawned(void){
+	return respawned_;
+}
+
+void Player::SetRespawned(bool respawned) {
+	respawned_ = respawned;
+	if (respawned_) {
+		position_ = Vector2::Origin;
+		velocity_ = 0.0f;
+		angle_ = 0.0f;
+		is_colliding_ = false;
+		is_alive_ = true;
+	}
+}
+
+std::vector<Vector2> Player::GetVertices(){
+	return vertices_;
 }

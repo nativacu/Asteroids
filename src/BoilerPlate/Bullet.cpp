@@ -6,7 +6,6 @@ Bullet::Bullet(Player ship){
 	position_ = GetBulletPosition(ship);
 	FillVertices();
 	radius_ = 2.0f;
-	velocity_ = 50.0f;
 }
 
 Bullet::~Bullet(){
@@ -42,8 +41,8 @@ void Bullet::SetIsAlive(bool is_alive) {
 
 Vector2 Bullet::GetBulletPosition(Player ship) {
 
-	MathUtilities m;
-	float radians = m.degrees_to_radians(angle_);
+	MathUtilities math_util;
+	float radians = math_util.DegreesToRadians(angle_);
 	Vector2 ship_position = ship.GetPosition();
 	float ship_radius = ship.GetRadius();
 	Vector2 position;

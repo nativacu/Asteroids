@@ -16,6 +16,7 @@ private:
 	float ship_height_ = 60.0f;
 	float ship_mass_ = 1.5f;
 	bool is_alive_ = true;
+	bool respawned_;
 	bool is_moving_up_;
 	bool is_moving_left_;
 	bool is_moving_right_;
@@ -36,4 +37,7 @@ public:
 	void ApplyImpulse(Vector2) override;
 	bool GetIsAlive(void);
 	void SetIsAlive(bool);
+	bool GetRespawned(void);
+	void SetRespawned(bool);
+	std::vector<Vector2> GetVertices();
 };

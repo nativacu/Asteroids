@@ -48,6 +48,7 @@ namespace Engine
 		void GetFrameRate					( );
 		void UpdateFrameSequence			( );
 		void ShootAsteroids					( );
+		void DisplayLives                   ( );
 		void Render							( );
 	private:
 		/* =============================================================
@@ -83,7 +84,8 @@ namespace Engine
 		std::vector<Vector2>					capt_frames_;
 		float									delta_time_;
 		bool									graph_;
-		bool									showingPlot;
+		int										life_counter_;
+		double									respawn_timer_;
 	};
 }
 #endif /* GAME_HPP */

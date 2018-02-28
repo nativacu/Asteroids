@@ -5,8 +5,9 @@
 class Bullet : public Entity{
 
 private:
-	float life_span_ = 50.0f;
+	float life_span_ = 60.0f;
 	bool is_alive_ = true;
+
 public:
 	Bullet(Player);
 	~Bullet();

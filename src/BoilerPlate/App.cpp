@@ -2,7 +2,6 @@
 #include <iostream>
 #include <algorithm>
 #include <time.h>
-#include <utility>
 
 // OpenGL includes
 #include <GL/glew.h>
@@ -18,9 +17,16 @@ namespace Engine
 {
 	const float DESIRED_FRAME_RATE = 60.0f;
 	const float DESIRED_FRAME_TIME = 1.0f / DESIRED_FRAME_RATE;
-	const float kXAxisPosition = 300.0f;
-	const float kYAxisPosition = -300.0f;
+	const float kGraphXAxisPosition = 300.0f;
+	const float kGraphYAxisPosition = -300.0f;
+	const float kLifeDisplayXAxisPosition = 36;
+	const float kLifeDisplayYAxisPosition = 40;
+	const float kShipDifference = 3;
+	const int kInmortalitySeconds = 2;
 	const int kMaxFrameCount = 10;
+	const int kMaxLives = 3;
+	const int kMaxBullets = 6;
+	const int kMaxAsteroids = 20;
 
 	App::App(const std::string& title, const int width, const int height)
 		: m_title(title)
@@ -30,6 +36,7 @@ namespace Engine
 		, m_timer(new TimeManager)
 		, m_mainWindow(nullptr)
 		, asteroid_count_(5)
+		, life_counter_(3)
 	{
 		m_state = GameState::UNINITIALIZED;
 		m_lastFrameTime = m_timer->GetElapsedTimeInSeconds();
@@ -42,13 +49,12 @@ namespace Engine
 
 		delta_time_ = DESIRED_FRAME_TIME;
 
-
 		current_frame_position_ = 0;
 		capt_frames_ = std::vector<Vector2>(kMaxFrameCount);
 
 		for (int i = 0; i < capt_frames_.size(); i++)
 		{
-			capt_frames_[i] = Vector2(i, DESIRED_FRAME_TIME);
+			capt_frames_[i] = Vector2((static_cast <float>(i), DESIRED_FRAME_TIME));
 		}
 	}
 
@@ -124,7 +130,7 @@ namespace Engine
 
 		case SDL_SCANCODE_M:
 			
-			if (asteroid_count_ < 20) {
+			if (asteroid_count_ < kMaxAsteroids) {
 				asteroid_count_++;
 				asteroids_.push_back(Asteroid());
 			}
@@ -147,7 +153,6 @@ namespace Engine
 			break;
 
 		case SDL_SCANCODE_F:
-			SDL_Log("F was pressed.", keyBoardEvent.keysym.scancode);
 			if (graph_) {
 				graph_ = false;
 			}
@@ -156,8 +161,16 @@ namespace Engine
 			}
 			break;
 
+		case SDL_SCANCODE_R:
+			if (life_counter_ > 0 && !ship_->GetIsAlive()) {
+				ship_->SetRespawned(true);
+				life_counter_--;
+				respawn_timer_ = m_timer->GetElapsedTimeInSeconds();
+			}
+			break;
+
 		case SDL_SCANCODE_SPACE:
-			if (bullets_.size() < 6) {
+			if (bullets_.size() < kMaxBullets && ship_->GetIsAlive()) {
 				bullets_.push_back(Bullet(*ship_));
 			}
 			break;
@@ -193,7 +206,6 @@ namespace Engine
 	void App::Update()
 	{
 		double startTime = m_timer->GetElapsedTimeInSeconds();
-
 		// Update code goes here
 		//
 
@@ -219,25 +231,33 @@ namespace Engine
 		delta_time_ = DESIRED_FRAME_TIME - (endTime - startTime);
 		UpdateFrameSequence();
 
-		while (endTime < nextTimeFrame)
-		{
+		while (endTime < nextTimeFrame){
 			// Spin lock
 			endTime = m_timer->GetElapsedTimeInSeconds();
 		}
 
-		//double elapsedTime = endTime - startTime;        
+		//double elapsedTime = endTime - startTime;   
+		if (ship_->GetRespawned()) {
+			if (endTime - respawn_timer_ < kInmortalitySeconds) {
+				ship_->SetIsColliding(false);
+				ship_->SetIsAlive(true);
+			}
+			else {
+				ship_->SetRespawned(false);
+			}
+		}
 
 		m_lastFrameTime = m_timer->GetElapsedTimeInSeconds();
 		m_nUpdates++;
-
 	}
 
-	void App::Render()
-	{
+	void App::Render(){
 		ColorScheme cs;
 		glClear(GL_COLOR_BUFFER_BIT);
 		cs.change_background(cs.green);
 		
+		DisplayLives();
+
 		if (ship_->GetIsAlive() || ship_->GetIsDebugging()) {
 			ship_->Render();
 			for (int i = 0; i < bullets_.size(); i++) {
@@ -263,8 +283,9 @@ namespace Engine
 			DrawDebugBulletLines();
 		}
 
-		if(graph_)
+		if (graph_) {
 			GetFrameRate();
+		}
 		
 		SDL_GL_SwapWindow(m_mainWindow);
 	}
@@ -429,7 +450,6 @@ namespace Engine
 				float added_radius = bullets_[k].GetRadius() + proximity_measurement;
 
 				if (distance <= added_radius) {
-					asteroids_[i].SetWasShot(true);
 					glColor4f(color.yellow.red, color.yellow.green, color.yellow.blue, color.yellow.opacity);
 					glVertex2f(bullet_position.x, bullet_position.y);
 					glVertex2f(asteroid_position.x, asteroid_position.y);
@@ -443,11 +463,9 @@ namespace Engine
 		glColor3f(1, 1, 1);
 	}
 
-	void App::GetFrameRate()
-	{
-		glColor3f(1, 1, 1);
+	void App::GetFrameRate(){
 		glLoadIdentity();
-		glTranslatef(kXAxisPosition, kYAxisPosition, 0.0f);
+		glTranslatef(kGraphXAxisPosition, kGraphYAxisPosition, 0.0f);
 		glBegin(GL_LINE_STRIP);
 		glVertex2f(0.0f, 100.0f);
 		glVertex2f(0.0f, 0.0f);
@@ -463,32 +481,39 @@ namespace Engine
 		glEnd();
 	}
 
-	void App::ShootAsteroids()
-	{
+	void App::ShootAsteroids(){
 		bool is_asteroid_deleted = false;
-		for (int i = 0; i < asteroids_.size(); i++)
-		{
-			for (int j = 0; j < bullets_.size(); j++)
-			{
+		for (int i = 0; i < asteroids_.size(); i++){
+
+			for (int j = 0; j < bullets_.size(); j++){
 				asteroids_[i].WasShot(bullets_[j]);
 				if (asteroids_[i].GetWasShot()) {
+					Vector2 parent_position = asteroids_[i].GetPosition();
 					bullets_.erase(bullets_.begin() + j);
-					asteroids_.erase(asteroids_.begin() + i);
-					asteroid_count_--;
-					std::cout << "test" << std::endl;
 					is_asteroid_deleted = true;
 
 					if (asteroids_[i].GetSize() == 3){
-						asteroids_.push_back(Asteroid(2));
-						asteroids_.push_back(Asteroid(2));
+						Asteroid fst_child_(2);
+						Asteroid snd_child_(2);
+						fst_child_.SetPosition(parent_position);
+						snd_child_.SetPosition(parent_position+10);
+						asteroids_.push_back(fst_child_);
+						asteroids_.push_back(snd_child_);
 						asteroid_count_ += 2;
 					}
 
-					if (asteroids_[i].GetSize() == 2){
-						asteroids_.push_back(Asteroid(1));
-						asteroids_.push_back(Asteroid(1));
+					else if (asteroids_[i].GetSize() == 2){
+						Asteroid fst_child_(1);
+						Asteroid snd_child_(1);
+						fst_child_.SetPosition(parent_position);
+						snd_child_.SetPosition(parent_position+10);
+						asteroids_.push_back(fst_child_);
+						asteroids_.push_back(snd_child_);
 						asteroid_count_ += 2;
 					}
+
+					asteroids_.erase(asteroids_.begin() + i);
+					asteroid_count_--;
 					break;
 				}
 			}
@@ -497,15 +522,34 @@ namespace Engine
 		}
 	}
 
-	
-
-	void App::UpdateFrameSequence(void)
-	{
+	void App::UpdateFrameSequence(void){
 		capt_frames_[current_frame_position_] = Vector2((float)current_frame_position_, delta_time_);
 		current_frame_position_++;
 
-		if (current_frame_position_ >= kMaxFrameCount)
+		if (current_frame_position_ >= kMaxFrameCount) {
 			current_frame_position_ = 0;
+		}
+	}
+
+	void App::DisplayLives() {
+		float life_factor = 1;
+		
+		for (int i = 0; i < life_counter_; i++) {
+			float x_axis = m_width / 2 - kLifeDisplayXAxisPosition * life_factor;
+			float y_axis = m_height / 2 - kLifeDisplayYAxisPosition;
+			std::vector<Vector2> ship_vertices = ship_->GetVertices();
+			glLoadIdentity();
+			glTranslatef(x_axis, y_axis, 0.0f);
+
+			glBegin(GL_LINE_LOOP);
+
+			for (int j = 0; j < ship_vertices.size(); j++) {
+				glVertex2f(ship_vertices[j].x/kShipDifference, ship_vertices[j].y/kShipDifference);
+			}
+
+			glEnd();
+			life_factor++;
+		}
 	}
 }
 
