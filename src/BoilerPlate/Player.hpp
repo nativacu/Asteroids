@@ -4,8 +4,8 @@
 #include "Entity.hpp"
 
 const int kTotalThrusterPoints = 6;
-const float kDefaultMove = 8.0f;
-const float kDefaultThrust = 6.5f;
+const float kDefaultMove = 6.0f;
+const float kDefaultThrust = 4.5f;
 const float kMaxSpeed = 200.0f;
 const float kFrictionCoefficient = 0.99f;
 

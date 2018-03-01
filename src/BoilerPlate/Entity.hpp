@@ -3,8 +3,6 @@
 #include <utility>
 #include "MathUtilities.h"
 #include <vector>
-#include <GL/glew.h>
-#include <SDL2/SDL_opengl.h>
 
 //Contains all shared members and functions of the Player and Asteroid classes
 class Entity

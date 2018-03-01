@@ -5,28 +5,35 @@
 
 // OpenGL includes
 #include <GL/glew.h>
-#include <SDL2/SDL_opengl.h>
+#include <SDL.h>
+//#include <SDL_opengl.h>
+#include <SDL_ttf.h>
 
 //New includes
 #include "ColorScheme.h"
 #include "Bullet.hpp"
-
-
+#include "InputManager.hpp"
 
 namespace Engine
 {
+	const int kMaxLives = 8;
+	const int kMaxBullets = 6;
+	const int kMaxAsteroids = 20;
+	const int kMaxFrameCount = 10;
+	const int kInmortalitySeconds = 2;
+	const int kExtraLifePoints = 500;
+	const int kRespawnTimerLimit = 10;
+	const int kBigAsteroidPointValue = 10;
+	const int kSmallAsteroidPointValue = 50;
+	const int kMediumAsteroidPointValue = 25;
+	const int kAllowedConsecutiveKeyInput = 15;
 	const float DESIRED_FRAME_RATE = 60.0f;
 	const float DESIRED_FRAME_TIME = 1.0f / DESIRED_FRAME_RATE;
 	const float kGraphXAxisPosition = 300.0f;
 	const float kGraphYAxisPosition = -300.0f;
 	const float kLifeDisplayXAxisPosition = 36;
 	const float kLifeDisplayYAxisPosition = 40;
-	const float kShipDifference = 3;
-	const int kInmortalitySeconds = 2;
-	const int kMaxFrameCount = 10;
-	const int kMaxLives = 3;
-	const int kMaxBullets = 6;
-	const int kMaxAsteroids = 20;
+	const float kShipDifference = 0.5;
 
 	App::App(const std::string& title, const int width, const int height)
 		: m_title(title)
@@ -35,13 +42,17 @@ namespace Engine
 		, m_nUpdates(0)
 		, m_timer(new TimeManager)
 		, m_mainWindow(nullptr)
-		, asteroid_count_(5)
+		, asteroid_count_(4)
 		, life_counter_(3)
+		, allowed_consecutive_key_input_(15)
+		, respawn_blink_timer_(0)
+		, points_to_extra_life_(kExtraLifePoints)
 	{
 		m_state = GameState::UNINITIALIZED;
 		m_lastFrameTime = m_timer->GetElapsedTimeInSeconds();
 		graph_ = false;
 		ship_ = new Player();
+		input_manager_ = InputManager::GetInstance();
 
 		for (int i = 0; i < asteroid_count_; i++) {
 			asteroids_.push_back(Asteroid());
@@ -100,6 +111,11 @@ namespace Engine
 			return false;
 		}
 
+		if (TTF_Init() == -1) {
+			SDL_Log("TTF_Init: %s\n", TTF_GetError());
+			return false;
+		}
+
 		// Setup the viewport
 		//
 		SetupViewport();
@@ -107,6 +123,22 @@ namespace Engine
 		// Change game state
 		//
 		m_state = GameState::INIT_SUCCESSFUL;
+
+		SDL_version compile_version;
+		const SDL_version *link_version = TTF_Linked_Version();
+		SDL_TTF_VERSION(&compile_version);
+
+		SDL_Log("compiled with SDL_ttf version: %d.%d.%d\n",
+			compile_version.major,
+			compile_version.minor,
+			compile_version.patch);
+
+		SDL_Log("running with SDL_ttf version: %d.%d.%d\n",
+			link_version->major,
+			link_version->minor,
+			link_version->patch);
+
+
 
 		return true;
 	}
@@ -116,68 +148,39 @@ namespace Engine
 		switch (keyBoardEvent.keysym.scancode)
 		{
 		case SDL_SCANCODE_UP:
-			ship_->SetIsMovingUp(true);
-			ship_->MoveForward();
+			input_manager_->SetWasUpKeyPressed(true);
 			break;
 
 		case SDL_SCANCODE_RIGHT:
-			ship_->SetIsMovingRight(true);
+			input_manager_->SetWasRightKeyPressed(true);
 			break;
 
 		case SDL_SCANCODE_LEFT:
-			ship_->SetIsMovingLeft(true);
+			input_manager_->SetWasLeftKeyPressed(true);
 			break;
 
 		case SDL_SCANCODE_M:
-			
-			if (asteroid_count_ < kMaxAsteroids) {
-				asteroid_count_++;
-				asteroids_.push_back(Asteroid());
-			}
+			input_manager_->SetWasMKeyPressed(true);
 			break;
 
 		case SDL_SCANCODE_L:
-			if (asteroid_count_ > 0) {
-				asteroid_count_--;
-				asteroids_.pop_back();
-			}
+			input_manager_->SetWasLKeyPressed(true);
 			break;
 
 		case SDL_SCANCODE_D:
-			if (ship_->GetIsAlive()) {
-				ship_->SetIsDebugging();
-				for (int i = 0; i < asteroids_.size(); i++) {
-					asteroids_[i].SetIsDebugging();
-				}
-			}
+			input_manager_->SetWasDKeyPressed(true);
 			break;
 
 		case SDL_SCANCODE_F:
-			if (graph_) {
-				graph_ = false;
-			}
-			else {
-				graph_ = true;
-			}
-			break;
-
-		case SDL_SCANCODE_R:
-			if (life_counter_ > 0 && !ship_->GetIsAlive()) {
-				ship_->SetRespawned(true);
-				life_counter_--;
-				respawn_timer_ = m_timer->GetElapsedTimeInSeconds();
-			}
+			input_manager_->SetWasFKeyPressed(true);
 			break;
 
 		case SDL_SCANCODE_SPACE:
-			if (bullets_.size() < kMaxBullets && ship_->GetIsAlive() && !ship_->GetRespawned()) {
-				bullets_.push_back(Bullet(*ship_));
-			}
+			input_manager_->SetWasSpaceKeyPressed(true);
 			break;
 
 		default:
 			SDL_Log("%S was pressed.", keyBoardEvent.keysym.scancode);
-			SDL_Log("%d",asteroids_.size());
 			break;
 		}
 	}
@@ -187,9 +190,35 @@ namespace Engine
 		switch (keyBoardEvent.keysym.scancode)
 		{
 		case SDL_SCANCODE_UP:
-			ship_->SetIsMovingUp(false);
-			ship_->SetIsMovingRight(false);
-			ship_->SetIsMovingLeft(false);
+			input_manager_->SetWasUpKeyPressed(false);
+			break;
+
+		case SDL_SCANCODE_RIGHT:
+			input_manager_->SetWasRightKeyPressed(false);
+			break;
+
+		case SDL_SCANCODE_LEFT:
+			input_manager_->SetWasLeftKeyPressed(false);
+			break;
+
+		case SDL_SCANCODE_M:
+			input_manager_->SetWasMKeyPressed(false);
+			break;
+
+		case SDL_SCANCODE_L:
+			input_manager_->SetWasLKeyPressed(false);
+			break;
+
+		case SDL_SCANCODE_D:
+			input_manager_->SetWasDKeyPressed(false);
+			break;
+
+		case SDL_SCANCODE_F:
+			input_manager_->SetWasFKeyPressed(false);
+			break;
+
+		case SDL_SCANCODE_SPACE:
+			input_manager_->SetWasSpaceKeyPressed(false);
 			break;
 
 		case SDL_SCANCODE_ESCAPE:
@@ -208,12 +237,22 @@ namespace Engine
 		double startTime = m_timer->GetElapsedTimeInSeconds();
 		// Update code goes here
 		//
+		ManageInput();
+		
+
+		if (ship_->GetIsColliding() && !ship_->GetIsDebugging()) {
+			if (life_counter_ > 0 && !ship_->GetIsAlive()) {
+				ship_->SetRespawned(true);
+				life_counter_--;
+				respawn_timer_ = m_timer->GetElapsedTimeInSeconds();
+			}
+			else {
+				ship_->SetIsAlive(false);
+			}
+		}
 
 		for (int i = 0; i < asteroids_.size(); i++) {
 			ship_->IsColliding(asteroids_[i]);
-			if (ship_->GetIsColliding() && !ship_->GetIsDebugging()) {
-				ship_->SetIsAlive(false);
-			}
 			asteroids_[i].Update(delta_time_);
 		}
 
@@ -238,17 +277,18 @@ namespace Engine
 
 		//double elapsedTime = endTime - startTime;   
 		if (ship_->GetRespawned()) {
-			int a = 0;
 			if (endTime - respawn_timer_ < kInmortalitySeconds) {
 				ship_->SetIsColliding(false);
-				if (ship_->GetIsAlive() && a > 50) {
+				if (ship_->GetIsAlive() && respawn_blink_timer_ == kRespawnTimerLimit) {
+					respawn_blink_timer_ = 0;
 					ship_->SetIsAlive(false);
-					a=0;
+					
 				}
 				else {
+					respawn_blink_timer_++;
 					ship_->SetIsAlive(true);
-					a++;
 				}
+				
 			}
 			else {
 				ship_->SetIsAlive(true);
@@ -271,6 +311,10 @@ namespace Engine
 		cs.change_background(cs.green);
 		
 		DisplayLives();
+
+		if (allowed_consecutive_key_input_ > 0) {
+			allowed_consecutive_key_input_--;
+		}
 
 		if (ship_->GetIsAlive() || ship_->GetIsDebugging()) {
 			ship_->Render();
@@ -295,10 +339,6 @@ namespace Engine
 			}
 			DrawDebugLines();
 			DrawDebugBulletLines();
-		}
-
-		if (ship_->GetRespawned()) {
-		//	ship_->DrawCircle();
 		}
 
 		if (graph_) {
@@ -395,6 +435,7 @@ namespace Engine
 		SDL_DestroyWindow(m_mainWindow);
 
 		SDL_Quit();
+		TTF_Quit();
 	}
 
 	void App::OnResize(int width, int height)
@@ -422,6 +463,7 @@ namespace Engine
 		// Cleanup SDL pointers
 		//
 		CleanupSDL();
+		TTF_Quit();
 	}
 
 	void App::DrawDebugLines() {
@@ -466,7 +508,6 @@ namespace Engine
 				Vector2 asteroid_position = asteroids_[i].GetPosition();
 				Vector2 bullet_position = bullets_[k].GetPosition();
 				float added_radius = bullets_[k].GetRadius() + proximity_measurement;
-
 				if (distance <= added_radius) {
 					glColor4f(color.yellow.red, color.yellow.green, color.yellow.blue, color.yellow.opacity);
 					glVertex2f(bullet_position.x, bullet_position.y);
@@ -502,15 +543,17 @@ namespace Engine
 	void App::ShootAsteroids(){
 		bool is_asteroid_deleted = false;
 		for (int i = 0; i < asteroids_.size(); i++){
-
 			for (int j = 0; j < bullets_.size(); j++){
 				asteroids_[i].WasShot(bullets_[j]);
-				if (asteroids_[i].GetWasShot()) {
+
+				if (asteroids_[i].GetWasShot() && !ship_->GetIsDebugging()) {
 					Vector2 parent_position = asteroids_[i].GetPosition();
 					bullets_.erase(bullets_.begin() + j);
 					is_asteroid_deleted = true;
 
 					if (asteroids_[i].GetSize() == 3){
+						player_score_ += kBigAsteroidPointValue;
+						points_to_extra_life_ -= kBigAsteroidPointValue;
 						Asteroid fst_child_(2);
 						Asteroid snd_child_(2);
 						fst_child_.SetPosition(parent_position);
@@ -521,6 +564,8 @@ namespace Engine
 					}
 
 					else if (asteroids_[i].GetSize() == 2){
+						player_score_ += kMediumAsteroidPointValue;
+						points_to_extra_life_ -= kMediumAsteroidPointValue;
 						Asteroid fst_child_(1);
 						Asteroid snd_child_(1);
 						fst_child_.SetPosition(parent_position);
@@ -530,8 +575,19 @@ namespace Engine
 						asteroid_count_ += 2;
 					}
 
+					else {
+						player_score_ += kSmallAsteroidPointValue;
+						points_to_extra_life_ -= kSmallAsteroidPointValue;
+					}
 					asteroids_.erase(asteroids_.begin() + i);
 					asteroid_count_--;
+
+					if (points_to_extra_life_ <= 0) {
+						life_counter_++;
+						points_to_extra_life_ = kExtraLifePoints;
+					}
+
+					SDL_Log("%d", points_to_extra_life_);
 					break;
 				}
 			}
@@ -551,18 +607,18 @@ namespace Engine
 
 	void App::DisplayLives() {
 		float life_factor = 1;
-		
 		for (int i = 0; i < life_counter_; i++) {
 			float x_axis = m_width / 2 - kLifeDisplayXAxisPosition * life_factor;
 			float y_axis = m_height / 2 - kLifeDisplayYAxisPosition;
 			std::vector<Vector2> ship_vertices = ship_->GetVertices();
 			glLoadIdentity();
+
 			glTranslatef(x_axis, y_axis, 0.0f);
 
 			glBegin(GL_LINE_LOOP);
 
 			for (int j = 0; j < ship_vertices.size(); j++) {
-				glVertex2f(ship_vertices[j].x/kShipDifference, ship_vertices[j].y/kShipDifference);
+				glVertex2f(ship_vertices[j].x * kShipDifference, ship_vertices[j].y * kShipDifference);
 			}
 
 			glEnd();
@@ -570,6 +626,68 @@ namespace Engine
 		}
 	}
 
+	void App::ManageInput() {
+		if (input_manager_->GetWasUpKeyPressed() && allowed_consecutive_key_input_ == 0) {
+			ship_->SetIsMovingUp(true);
+			ship_->MoveForward();
+		}
+
+		if (!input_manager_->GetWasUpKeyPressed()) {
+			ship_->SetIsMovingUp(false);
+		}
+
+		if (input_manager_->GetWasRightKeyPressed() && allowed_consecutive_key_input_ == 0) {
+			ship_->SetIsMovingRight(true);
+		}
+		
+		if (input_manager_->GetWasLeftKeyPressed() && allowed_consecutive_key_input_ == 0) {
+			ship_->SetIsMovingLeft(true);
+		}
+
+		if (input_manager_->GetWasMKeyPressed() && allowed_consecutive_key_input_ == 0) {
+			if (asteroid_count_ < kMaxAsteroids) {
+				asteroid_count_++;
+				asteroids_.push_back(Asteroid());
+				allowed_consecutive_key_input_ = kAllowedConsecutiveKeyInput;
+			}
+		}
+
+		if (input_manager_->GetWasLKeyPressed() && allowed_consecutive_key_input_ == 0) {
+			if (asteroid_count_ > 0) {
+				asteroid_count_--;
+				asteroids_.pop_back();
+				allowed_consecutive_key_input_ = kAllowedConsecutiveKeyInput;
+			}
+		}
+		
+		if (input_manager_->GetWasDKeyPressed() && allowed_consecutive_key_input_ == 0) {
+				ship_->SetIsDebugging();
+				for (int i = 0; i < asteroids_.size(); i++) {
+					asteroids_[i].SetIsDebugging();
+				}
+			allowed_consecutive_key_input_ = kAllowedConsecutiveKeyInput;
+		}
+
+		if (input_manager_->GetWasFKeyPressed() && allowed_consecutive_key_input_ == 0) {
+			if (graph_) {
+				graph_ = false;
+			}
+			else {
+				graph_ = true;
+			}
+			allowed_consecutive_key_input_ = kAllowedConsecutiveKeyInput;
+		}
+
+		if (input_manager_->GetWasSpaceKeyPressed() && allowed_consecutive_key_input_ == 0) {
+			if (bullets_.size() < kMaxBullets && ship_->GetIsAlive() && !ship_->GetRespawned()) {
+				bullets_.push_back(Bullet(*ship_));
+			}
+			allowed_consecutive_key_input_ = kAllowedConsecutiveKeyInput;
+		}
+	}
+
+	
 }
+
 
 
