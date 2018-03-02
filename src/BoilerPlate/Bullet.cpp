@@ -1,12 +1,15 @@
 #include "Bullet.hpp"
+float kImpulse = 60.0f;
+float kRadius = 2.0f;
+float kLifeSpan = 28.0f;
 
 Bullet::Bullet(Player ship){
 	MathUtilities m;
+	life_span_ = kLifeSpan;
 	angle_ = ship.GetAngle();
 	position_ = GetBulletPosition(ship);
 	FillVertices();
-	radius_ = 2.0f;
-	velocity_ = 50.0f;
+	radius_ = kRadius;
 }
 
 Bullet::~Bullet(){
@@ -28,7 +31,7 @@ void Bullet::Update(float delta_time) {
 		is_alive_ = false;
 	}
 
-	ApplyImpulse(Vector2(8.0f));
+	ApplyImpulse(Vector2(kImpulse));
 	Entity::Update(delta_time);
 }
 
@@ -42,8 +45,8 @@ void Bullet::SetIsAlive(bool is_alive) {
 
 Vector2 Bullet::GetBulletPosition(Player ship) {
 
-	MathUtilities m;
-	float radians = m.degrees_to_radians(angle_);
+	MathUtilities math_util;
+	float radians = math_util.DegreesToRadians(angle_);
 	Vector2 ship_position = ship.GetPosition();
 	float ship_radius = ship.GetRadius();
 	Vector2 position;

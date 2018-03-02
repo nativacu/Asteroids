@@ -91,9 +91,6 @@ Vector3 operator*(float scalar, const Vector3& to_multiply) {
 	return to_multiply * scalar;
 }
 
-Vector3 operator*(const Vector3& to_multiply, float scalar) {
-	return to_multiply * scalar;
-}
 
 Vector3& Vector3::operator+=(const Vector3& to_add) {
 
