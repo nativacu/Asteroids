@@ -13,6 +13,7 @@
 #include "Player.hpp"
 #include "Bullet.hpp"
 #include <vector>
+#include "InputManager.hpp"
 
 namespace Engine
 {
@@ -43,13 +44,18 @@ namespace Engine
 		void Execute						( );
 		bool Init							( );
 		void Update							( );
+		void ManageInput					( );
 		void DrawDebugLines					( );
 		void DrawDebugBulletLines			( );
 		void GetFrameRate					( );
+		void BreakAsteroid					(int, Vector2);
+		void AddAsteroids					( );
 		void UpdateFrameSequence			( );
 		void ShootAsteroids					( );
 		void DisplayLives                   ( );
 		void Render							( );
+		void RestartGame					( );
+
 	private:
 		/* =============================================================
 		 * PRIVATE FUNCTIONS
@@ -69,7 +75,7 @@ namespace Engine
 		 * ============================================================= */
 		int										m_width;
 		int										m_height;
-		int										m_nUpdates;
+		int										m_nUpdates;	
 		double									m_lastFrameTime;
 		std::string								m_title;
 		SDL_Window*								m_mainWindow;
@@ -86,6 +92,11 @@ namespace Engine
 		bool									graph_;
 		int										life_counter_;
 		double									respawn_timer_;
+		int										respawn_blink_timer_;
+		InputManager*							input_manager_;
+		int										allowed_consecutive_key_input_;
+		int										player_score_;
+		int										points_to_extra_life_;
 	};
 }
 #endif /* GAME_HPP */

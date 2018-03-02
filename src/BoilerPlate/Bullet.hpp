@@ -5,7 +5,7 @@
 class Bullet : public Entity{
 
 private:
-	float life_span_ = 60.0f;
+	float life_span_;
 	bool is_alive_ = true;
 
 public:

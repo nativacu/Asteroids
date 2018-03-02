@@ -68,8 +68,13 @@ int Asteroid::GetSize() {
 
 void Asteroid::ApplyImpulse(Vector2 impulse){
 	MathUtilities math_util;
-	velocity_.x -= (impulse.x) * sinf(math_util.DegreesToRadians(angle_)) + size_;
-	velocity_.y += (impulse.y) * cosf(math_util.DegreesToRadians(angle_)) + size_;
+	velocity_.x -= (impulse.x) * sinf(math_util.DegreesToRadians(angle_)) * 2.0f/ size_;
+	velocity_.y += (impulse.y) * cosf(math_util.DegreesToRadians(angle_)) * 2.0f/ size_;
+}
+
+void Asteroid::SetIsDebugging(){
+	was_shot_ = false;
+	Entity::SetIsDebugging();
 }
 
 
@@ -106,7 +111,6 @@ void Asteroid::WasShot(Bullet bullet) {
 	}
 }
 
-
 bool Asteroid::GetWasShot() {
 	return was_shot_;
 }
@@ -114,3 +118,4 @@ bool Asteroid::GetWasShot() {
 void Asteroid::SetWasShot(bool shot) {
 	was_shot_ = shot;
 }
+

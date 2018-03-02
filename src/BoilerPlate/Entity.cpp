@@ -2,6 +2,8 @@
 #include "MathUtilities.h"
 #include <math.h>
 #include "ColorScheme.h"
+#include <GL/glew.h>
+#include <SDL_opengl.h>
 
 
 Entity::Entity()

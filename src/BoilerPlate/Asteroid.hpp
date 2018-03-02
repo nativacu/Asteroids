@@ -19,6 +19,7 @@ public:
 	void WasShot(Bullet);
 	void SetWasShot(bool);
 	void ApplyImpulse(Vector2) override;
+	void SetIsDebugging() override;
 
 private:
 	SizeOptions size_;
