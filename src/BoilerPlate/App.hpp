@@ -12,8 +12,11 @@
 #include "Asteroid.hpp"
 #include "Player.hpp"
 #include "Bullet.hpp"
+#include <irrklang.h>
 #include <vector>
+#include "FontManager.hpp"
 #include "InputManager.hpp"
+//#include "Font.cpp"
 
 namespace Engine
 {
@@ -49,12 +52,15 @@ namespace Engine
 		void DrawDebugBulletLines			( );
 		void GetFrameRate					( );
 		void BreakAsteroid					(int, Vector2);
-		void AddAsteroids					( );
+		void AddAsteroids					(int);
 		void UpdateFrameSequence			( );
 		void ShootAsteroids					( );
 		void DisplayLives                   ( );
 		void Render							( );
 		void RestartGame					( );
+		void SetFontColor					(int,int,int,int);
+		void ScoreRender					();
+		void GameOverRender					( );
 
 	private:
 		/* =============================================================
@@ -73,15 +79,15 @@ namespace Engine
 		/* =============================================================
 		 * MEMBERS
 		 * ============================================================= */
-		int										m_width;
-		int										m_height;
-		int										m_nUpdates;	
-		double									m_lastFrameTime;
-		std::string								m_title;
-		SDL_Window*								m_mainWindow;
-		SDL_GLContext							m_context;
-		GameState::State						m_state;
-		Engine::TimeManager*					m_timer;
+		int										width_;
+		int										height_;
+		int										n_updates_;	
+		double									last_frame_time;
+		std::string								title_;
+		SDL_Window*								main_window_;
+		SDL_GLContext							context_;
+		GameState::State						state_;
+		Engine::TimeManager*					timer_;
 		std::vector<Asteroid>					asteroids_;
 		Player*									ship_;
 		int										asteroid_count_;
@@ -97,6 +103,12 @@ namespace Engine
 		int										allowed_consecutive_key_input_;
 		int										player_score_;
 		int										points_to_extra_life_;
+		irrklang::ISoundEngine*					sound_engine_;
+		bool									played_game_over_sound_;
+		FontManager*							font_manager_;
+		TTF_Font*								font_;
+		SDL_Color								font_color_;
+		bool									game_over_;
 	};
 }
 #endif /* GAME_HPP */
