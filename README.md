@@ -8,17 +8,19 @@ Movement:
   - Left key
   
 Shooting:
-  -Space Bar
+  - Space Bar
  
 Debugging/Framerate:
-  -D key
-  -F key
+  - D key
+  - F key
   
 Adding Asteroids:
-  -M key
+  - M key
 
 Removing Asteroids:
-  -L key
+  - L key
   
-Working V0.0.5
-
+Restart Asteroids:
+  - R key
+  
+Working V0.0.6
