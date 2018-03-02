@@ -48,10 +48,13 @@ namespace Engine
 		void DrawDebugLines					( );
 		void DrawDebugBulletLines			( );
 		void GetFrameRate					( );
+		void BreakAsteroid					(int, Vector2);
+		void AddAsteroids					( );
 		void UpdateFrameSequence			( );
 		void ShootAsteroids					( );
 		void DisplayLives                   ( );
 		void Render							( );
+		void RestartGame					( );
 
 	private:
 		/* =============================================================

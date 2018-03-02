@@ -30,7 +30,7 @@ public:
 	virtual void Update(float);
 	float Warp(float&, float, float);
 	void DrawCircle(void);
-	void SetIsDebugging();
+	virtual void SetIsDebugging();
 	void SetWindowDimensions(float, float);
 	float GetEntitiesDistance(Entity);
 	float GetEntitiesDistance(Vector2);
