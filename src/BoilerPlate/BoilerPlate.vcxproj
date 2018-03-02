@@ -89,20 +89,23 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\Externals\SDL2-2.0.4\include\SDL2;..\Externals\glew-1.13.0\include;..\Externals\SDL2_ttf-2.0.14\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Externals\SDL2-2.0.4\include\SDL2;..\Externals\glew-1.13.0\include;..\Externals\SDL2_ttf-2.0.14\include;..\Externals\irrKlang-1.6.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>..\Externals\SDL2-2.0.4\lib\x86;..\Externals\glew-1.13.0\lib\Release\Win32;..\Externals\SDL2_ttf-2.0.14\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glew32.lib;opengl32.lib;SDL2main.lib;SDL2.lib;SDL2_ttf.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\Externals\SDL2-2.0.4\lib\x86;..\Externals\glew-1.13.0\lib\Release\Win32;..\Externals\SDL2_ttf-2.0.14\lib\x86;..\Externals\irrKlang-1.6.0\lib\Win32-visualStudio;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glew32.lib;opengl32.lib;SDL2main.lib;SDL2.lib;SDL2_ttf.lib;irrKlang.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>copy /Y "$(SolutionDir)\Externals\SDL2_ttf-2.0.14\lib\x86\SDL2_ttf.dll" "$(TargetDir)SDL2_ttf.dll"
 
 copy /Y "$(SolutionDir)\Externals\SDL2_ttf-2.0.14\lib\x86\libfreetype-6.dll" "$(TargetDir)libfreetype-6.dll"
 
-copy /Y "$(SolutionDir)\Externals\SDL2_ttf-2.0.14\lib\x86\zlib1.dll" "$(TargetDir)zlib1.dll"</Command>
+copy /Y "$(SolutionDir)\Externals\SDL2_ttf-2.0.14\lib\x86\zlib1.dll" "$(TargetDir)zlib1.dll"
+copy /Y "$(SolutionDir)\Externals\irrKlang-1.6.0\bin\win32-visualStudio\ikpFlac.dll" "$(TargetDir)ikpFlac.dll"
+copy /Y "$(SolutionDir)\Externals\irrKlang-1.6.0\bin\win32-visualStudio\ikpMP3.dll" "$(TargetDir)ikpMP3.dll"
+copy /Y "$(SolutionDir)\Externals\irrKlang-1.6.0\bin\win32-visualStudio\irrKlang.dll" "$(TargetDir)irrKlang.dll"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -112,20 +115,23 @@ copy /Y "$(SolutionDir)\Externals\SDL2_ttf-2.0.14\lib\x86\zlib1.dll" "$(TargetDi
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\Externals\SDL2-2.0.4\include\SDL2;..\Externals\glew-1.13.0\include;..\Externals\SDL2_ttf-2.0.14\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Externals\glew-1.13.0\include;..\Externals\SDL2-2.0.4\include\SDL2;..\Externals\SDL2_ttf-2.0.14\include;..\Externals\irrKlang-64bit-1.6.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>..\Externals\SDL2-2.0.4\lib\x64;..\Externals\SDL2_ttf-2.0.14\lib\x64;..\Externals\glew-1.13.0\lib\Release\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glew32.lib;opengl32.lib;SDL2main.lib;SDL2.lib;SDL2_ttf.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\Externals\glew-1.13.0\lib\Release\x64;..\Externals\SDL2-2.0.4\lib\x64;..\Externals\SDL2_ttf-2.0.14\lib\x64;..\Externals\irrKlang-64bit-1.6.0\lib\Winx64-visualStudio;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glew32.lib;opengl32.lib;SDL2main.lib;SDL2.lib;SDL2_ttf.lib;irrKlang.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y "$(SolutionDir)\Externals\glew-1.13.-\bin\Release\x64\glew32.dll" "$(TargetDir)glew32.dll"
-copy /Y "$(SolutionDir)\Externals\SDL2-2.0.4\lib\x64\SDL2.dll" "(TargetDir)SDL2.dll"
+      <Command>copy /Y "$(SolutionDir)\Externals\glew-1.13.0\bin\Release\x64\glew32.dll" "$(TargetDir)glew32.dll"
+copy /Y "$(SolutionDir)\Externals\SDL2-2.0.4\lib\x64\SDL2.dll" "$(TargetDir)SDL2.dll"
 copy /Y "$(SolutionDir)\Externals\SDL2_ttf-2.0.14\lib\x64\SDL2_ttf.dll" "$(TargetDir)SDL2_ttf.dll"
 copy /Y "$(SolutionDir)\Externals\SDL2_ttf-2.0.14\lib\x64\libfreetype-6.dll" "$(TargetDir)libfreetype-6.dll"
-copy /Y "$(SolutionDir)\Externals\SDL2_ttf-2.0.14\lib\x64\zlib1.dll" "$(TargetDir)zlib1.dll"</Command>
+copy /Y "$(SolutionDir)\Externals\SDL2_ttf-2.0.14\lib\x64\zlib1.dll" "$(TargetDir)zlib1.dll"
+copy /Y "$(SolutionDir)\Externals\irrKlang-64bit-1.6.0\bin\winx64-visualStudio\ikpFlac.dll" "$(TargetDir)ikpFlac.dll"
+copy /Y "$(SolutionDir)\Externals\irrKlang-64bit-1.6.0\bin\winx64-visualStudio\ikpMP3.dll" "$(TargetDir)ikpMP3.dll"
+copy /Y "$(SolutionDir)\Externals\irrKlang-64bit-1.6.0\bin\winx64-visualStudio\irrKlang.dll" "$(TargetDir)irrKlang.dll"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -137,22 +143,25 @@ copy /Y "$(SolutionDir)\Externals\SDL2_ttf-2.0.14\lib\x64\zlib1.dll" "$(TargetDi
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\Externals\SDL2-2.0.4\include\SDL2;..\Externals\glew-1.13.0\include;..\Externals\SDL2_ttf-2.0.14\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Externals\SDL2-2.0.4\include\SDL2;..\Externals\glew-1.13.0\include;..\Externals\SDL2_ttf-2.0.14\include;..\Externals\irrKlang-1.6.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>..\Externals\SDL2-2.0.4\lib\x86;..\Externals\glew-1.13.0\lib\Release\Win32;..\Externals\SDL2_ttf-2.0.14\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glew32.lib;opengl32.lib;SDL2main.lib;SDL2.lib;SDL2_ttf.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\Externals\SDL2-2.0.4\lib\x86;..\Externals\glew-1.13.0\lib\Release\Win32;..\Externals\SDL2_ttf-2.0.14\lib\x86;..\Externals\irrKlang-1.6.0\lib\Win32-visualStudio;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glew32.lib;opengl32.lib;SDL2main.lib;SDL2.lib;SDL2_ttf.lib;irrKlang.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>copy /Y "$(SolutionDir)\Externals\SDL2_ttf-2.0.14\lib\x86\SDL2_ttf.dll" "$(TargetDir)SDL2_ttf.dll"
 
 copy /Y "$(SolutionDir)\Externals\SDL2_ttf-2.0.14\lib\x86\libfreetype-6.dll" "$(TargetDir)libfreetype-6.dll"
 
-copy /Y "$(SolutionDir)\Externals\SDL2_ttf-2.0.14\lib\x86\zlib1.dll" "$(TargetDir)zlib1.dll"</Command>
+copy /Y "$(SolutionDir)\Externals\SDL2_ttf-2.0.14\lib\x86\zlib1.dll" "$(TargetDir)zlib1.dll"
+copy /Y "$(SolutionDir)\Externals\irrKlang-1.6.0\bin\win32-visualStudio\ikpFlac.dll" "$(TargetDir)ikpFlac.dll"
+copy /Y "$(SolutionDir)\Externals\irrKlang-1.6.0\bin\win32-visualStudio\ikpMP3.dll" "$(TargetDir)ikpMP3.dll"
+copy /Y "$(SolutionDir)\Externals\irrKlang-1.6.0\bin\win32-visualStudio\irrKlang.dll" "$(TargetDir)irrKlang.dll"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -164,22 +173,25 @@ copy /Y "$(SolutionDir)\Externals\SDL2_ttf-2.0.14\lib\x86\zlib1.dll" "$(TargetDi
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\Externals\SDL2-2.0.4\include\SDL2;..\Externals\glew-1.13.0\include;..\Externals\SDL2_ttf-2.0.14\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Externals\glew-1.13.0\include;..\Externals\SDL2-2.0.4\include\SDL2;..\Externals\SDL2_ttf-2.0.14\include;..\Externals\irrKlang-64bit-1.6.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>..\Externals\SDL2-2.0.4\lib\x64;..\Externals\SDL2_ttf-2.0.14\lib\x64;..\Externals\glew-1.13.0\lib\Release\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glew32.lib;opengl32.lib;SDL2main.lib;SDL2.lib;SDL2_ttf.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\Externals\glew-1.13.0\lib\Release\x64;..\Externals\SDL2-2.0.4\lib\x64;..\Externals\SDL2_ttf-2.0.14\lib\x64;..\Externals\irrKlang-64bit-1.6.0\lib\Winx64-visualStudio;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glew32.lib;opengl32.lib;SDL2main.lib;SDL2.lib;SDL2_ttf.lib;irrKlang.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y "$(SolutionDir)\Externals\glew-1.13.-\bin\Release\x64\glew32.dll" "$(TargetDir)glew32.dll"
-copy /Y "$(SolutionDir)\Externals\SDL2-2.0.4\lib\x64\SDL2.dll" "(TargetDir)SDL2.dll"
+      <Command>copy /Y "$(SolutionDir)\Externals\glew-1.13.0\bin\Release\x64\glew32.dll" "$(TargetDir)glew32.dll"
+copy /Y "$(SolutionDir)\Externals\SDL2-2.0.4\lib\x64\SDL2.dll" "$(TargetDir)SDL2.dll"
 copy /Y "$(SolutionDir)\Externals\SDL2_ttf-2.0.14\lib\x64\SDL2_ttf.dll" "$(TargetDir)SDL2_ttf.dll"
 copy /Y "$(SolutionDir)\Externals\SDL2_ttf-2.0.14\lib\x64\libfreetype-6.dll" "$(TargetDir)libfreetype-6.dll"
-copy /Y "$(SolutionDir)\Externals\SDL2_ttf-2.0.14\lib\x64\zlib1.dll" "$(TargetDir)zlib1.dll"</Command>
+copy /Y "$(SolutionDir)\Externals\SDL2_ttf-2.0.14\lib\x64\zlib1.dll" "$(TargetDir)zlib1.dll"
+copy /Y "$(SolutionDir)\Externals\irrKlang-64bit-1.6.0\bin\winx64-visualStudio\ikpFlac.dll" "$(TargetDir)ikpFlac.dll"
+copy /Y "$(SolutionDir)\Externals\irrKlang-64bit-1.6.0\bin\winx64-visualStudio\ikpMP3.dll" "$(TargetDir)ikpMP3.dll"
+copy /Y "$(SolutionDir)\Externals\irrKlang-64bit-1.6.0\bin\winx64-visualStudio\irrKlang.dll" "$(TargetDir)irrKlang.dll"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -189,6 +201,7 @@ copy /Y "$(SolutionDir)\Externals\SDL2_ttf-2.0.14\lib\x64\zlib1.dll" "$(TargetDi
     <ClCompile Include="Color.cpp" />
     <ClCompile Include="ColorScheme.cpp" />
     <ClCompile Include="Entity.cpp" />
+    <ClCompile Include="FontManager.cpp" />
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MathUtilities.cpp" />
@@ -207,6 +220,7 @@ copy /Y "$(SolutionDir)\Externals\SDL2_ttf-2.0.14\lib\x64\zlib1.dll" "$(TargetDi
     <ClInclude Include="Color.h" />
     <ClInclude Include="ColorScheme.h" />
     <ClInclude Include="Entity.hpp" />
+    <ClInclude Include="FontManager.hpp" />
     <ClInclude Include="InputManager.hpp" />
     <ClInclude Include="MathUtilities.h" />
     <ClInclude Include="Player.hpp" />

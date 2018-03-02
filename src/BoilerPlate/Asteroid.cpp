@@ -80,19 +80,19 @@ void Asteroid::SetIsDebugging(){
 
 void Asteroid::FillVertices() {
 	float origin_offset = 3.0f;
-	vertices_.push_back(Vector2(0.0f * size_ + origin_offset, 21.8 * size_ + origin_offset));
+	vertices_.push_back(Vector2(3.0f * size_ + origin_offset, 21.8f * size_ + origin_offset));
 	vertices_.push_back(Vector2(13.8f * size_ + origin_offset, 17.25f * size_ + origin_offset));
 	vertices_.push_back(Vector2(20.7f * size_ + origin_offset, 10.9f * size_ + origin_offset));
 	vertices_.push_back(Vector2(24.6f * size_ + origin_offset, -12.0f * size_ + origin_offset));
-	vertices_.push_back(Vector2(17.25 * size_ + origin_offset, -20.7f * size_ + origin_offset));
+	vertices_.push_back(Vector2(17.25f * size_ + origin_offset, -20.7f * size_ + origin_offset));
 	vertices_.push_back(Vector2(10.35f * size_ + origin_offset, -24.6f * size_ + origin_offset));
-	vertices_.push_back(Vector2(0.0f * size_ + origin_offset, -21.85 * size_ + origin_offset));
-	vertices_.push_back(Vector2(-12.0 * size_ + origin_offset, -21.85 * size_ + origin_offset));
+	vertices_.push_back(Vector2(0.0f * size_ + origin_offset, -21.85f * size_ + origin_offset));
+	vertices_.push_back(Vector2(-12.0f * size_ + origin_offset, -21.85f * size_ + origin_offset));
 	vertices_.push_back(Vector2(-13.8f * size_ + origin_offset, -20.7f * size_ + origin_offset));
-	vertices_.push_back(Vector2(-20.7f * size_ + origin_offset, -17.25 * size_ + origin_offset));
-	vertices_.push_back(Vector2(-21.85 * size_ + origin_offset, -13.8f * size_ + origin_offset));
-	vertices_.push_back(Vector2(-24.6 * size_ + origin_offset, 0.0f * size_ + origin_offset));
-	vertices_.push_back(Vector2(-20.7 * size_ + origin_offset, 10.9f * size_ + origin_offset));
+	vertices_.push_back(Vector2(-20.7f * size_ + origin_offset, -17.25f * size_ + origin_offset));
+	vertices_.push_back(Vector2(-21.85f * size_ + origin_offset, -13.8f * size_ + origin_offset));
+	vertices_.push_back(Vector2(-24.6f * size_ + origin_offset, 0.0f * size_ + origin_offset));
+	vertices_.push_back(Vector2(-20.7f * size_ + origin_offset, 10.9f * size_ + origin_offset));
 	vertices_.push_back(Vector2(-17.25f * size_ + origin_offset, 10.35f * size_ + origin_offset));
 	vertices_.push_back(Vector2(-13.8f * size_ + origin_offset, 17.25f * size_ + origin_offset));
 }

@@ -36,7 +36,6 @@ struct Vector4 {
 	Vector4 operator/(const Vector4&) const;
 	Vector4 operator*(float);
 	friend Vector4 operator*(float, const Vector4&);
-	friend Vector4 operator*(const Vector4&, float);
 
 	Vector4& operator+=(const Vector4&);
 	Vector4& operator-=(const Vector4&);

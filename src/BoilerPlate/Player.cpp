@@ -2,7 +2,7 @@
 #include <math.h>
 #include "MathUtilities.h"
 #include <GL/glew.h>
-//#include <SDL_opengl.h>
+#include <SDL_opengl.h>
 
 MathUtilities kMathUtil;
 
@@ -25,10 +25,12 @@ void Player::Render(){
 	
 	if (is_moving_left_) {
 		RotateLeft();
+		Thrust();
 	}
 
 	else if (is_moving_right_) {
 		RotateRight();
+		Thrust();
 	}
 
 	else if (is_moving_up_) {

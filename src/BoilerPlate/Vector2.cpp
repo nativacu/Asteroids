@@ -78,10 +78,6 @@ Vector2 operator*(float scalar, const Vector2& to_multiply){
 	return to_multiply * scalar;
 }
 
-Vector2 operator*(const Vector2& to_multiply, float scalar) {
-	return to_multiply * scalar;
-}
-
 Vector2& Vector2::operator+=(const Vector2& to_add){
 
 	x += to_add.x;
